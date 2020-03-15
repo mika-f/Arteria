@@ -1,0 +1,9 @@
+{
+  "name": "@mikazuki/arteria",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "repository": "https://github.com/mika-f/Arteria",
+  "author": "Fuyuno Mikazuki",
+  "license": "AGPL-3.0",
+  "private": true
+}
