@@ -1,4 +1,5 @@
 use actix_web::{middleware, web, App, HttpServer};
+use actix_web::{middleware, App, HttpServer};
 
 mod routings;
 
@@ -10,6 +11,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::Logger::default())
             .route("/version", web::get().to(routings::version))
+            .service(routings::index)
+            .service(routings::version)
     })
     .bind(format!("127.0.0.1:{}", port))?
     .run()

@@ -1,4 +1,4 @@
-use actix_web::{HttpRequest, HttpResponse};
+use actix_web::{HttpRequest, HttpResponse, Responder};
 use serde::Serialize;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -8,7 +8,8 @@ struct ArteriaVersion {
     version: String,
 }
 
-pub async fn version(_: HttpRequest) -> HttpResponse {
+#[actix_web::get("/version")]
+pub async fn version(_: HttpRequest) -> impl Responder {
     HttpResponse::Ok().json(ArteriaVersion {
         version: VERSION.to_string(),
     })
