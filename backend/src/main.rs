@@ -1,16 +1,33 @@
+#[macro_use]
+extern crate diesel;
+
 use actix_web::{middleware, App, HttpServer};
 use bollard::Docker;
+use diesel::prelude::*;
+use diesel::r2d2::{self, ConnectionManager};
 use dotenv;
 
 mod routings;
+
+type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    let server_bind = std::env::var("ARTERIA_BIND").unwrap_or("127.0.0.1".to_string());
-    let server_port = std::env::var("ARTERIA_PORT").unwrap_or("3000".to_string());
+    let server_bind = std::env::var("ARTERIA_BIND").expect("ARTERIA_BIND not set");
+    let server_port = std::env::var("ARTERIA_PORT").expect("ARTERIA_PORT not set");
+
+    let database_host =
+        std::env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set");
+
+    // database connection
+    let manager = ConnectionManager::<MysqlConnection>::new(database_host);
+    let connection_pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create a pool");
+
     // docker connection
     let docker =
         Docker::connect_with_local_defaults().expect("Failed to create a connection with Docker");
@@ -18,6 +35,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .data(connection_pool.clone())
             .data(docker.clone())
             .wrap(middleware::Logger::default())
             .service(routings::index)
