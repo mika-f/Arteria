@@ -6,6 +6,7 @@ use bollard::Docker;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
 use dotenv;
+use harsh;
 
 mod routings;
 
@@ -32,11 +33,18 @@ async fn main() -> std::io::Result<()> {
     let docker =
         Docker::connect_with_local_defaults().expect("Failed to create a connection with Docker");
 
+    // id generator
+    let harsh = harsh::HarshBuilder::new()
+        .salt(std::env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT not set"))
+        .length(10)
+        .init()
+        .expect("Failed to create hash id builder");
 
     HttpServer::new(move || {
         App::new()
             .data(connection_pool.clone())
             .data(docker.clone())
+            .data(harsh.clone())
             .wrap(middleware::Logger::default())
             .service(routings::index)
             .service(routings::version)
