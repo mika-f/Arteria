@@ -8,7 +8,7 @@ struct ArteriaVersion {
     version: String,
 }
 
-#[actix_web::get("/version")]
+#[actix_web::get("/meta/version")]
 pub async fn version(_: HttpRequest) -> impl Responder {
     HttpResponse::Ok().json(ArteriaVersion {
         version: VERSION.to_string(),
