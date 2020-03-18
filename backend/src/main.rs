@@ -22,8 +22,13 @@ async fn main() -> std::io::Result<()> {
     let server_bind = std::env::var("ARTERIA_BIND").expect("ARTERIA_BIND not set");
     let server_port = std::env::var("ARTERIA_PORT").expect("ARTERIA_PORT not set");
 
-    let database_host =
-        std::env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set");
+    let database_host = format!(
+        "mysql://{}:{}@{}:{}/arteria",
+        std::env::var("ARTERIA_DATABASE_USER").expect("ARTERIA_DATABASE_USER not set"),
+        std::env::var("ARTERIA_DATABASE_PASS").expect("ARTERIA_DATABASE_PASS not set"),
+        std::env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set"),
+        std::env::var("ARTERIA_DATABASE_PORT").expect("ARTERIA_DATABASE_PORT not set"),
+    );
 
     // database connection
     let manager = ConnectionManager::<MysqlConnection>::new(database_host);
