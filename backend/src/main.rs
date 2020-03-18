@@ -54,7 +54,7 @@ async fn main() -> std::io::Result<()> {
             .data(harsh.clone())
             .wrap(middleware::Logger::default())
             .service(routings::index)
-            .service(routings::version)
+            .service(routings::meta::version)
     })
     .bind(format!("{}:{}", server_bind, server_port))?
     .run()

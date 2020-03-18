@@ -1,4 +1,3 @@
 mod index;
-mod version;
+pub mod meta;
 pub use index::*;
-pub use version::*;
