@@ -8,7 +8,9 @@ use diesel::r2d2::{self, ConnectionManager};
 use dotenv;
 use harsh;
 
+pub mod models;
 mod routings;
+pub mod schema;
 
 type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
