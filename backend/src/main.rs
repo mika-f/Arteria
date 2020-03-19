@@ -8,13 +8,13 @@ use diesel::r2d2::{self, ConnectionManager};
 use dotenv;
 use harsh;
 
-pub mod models;
+mod database;
+mod errors;
+mod models;
 mod routings;
-pub mod schema;
-pub mod services;
+mod schema;
+mod services;
 mod web;
-
-type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
