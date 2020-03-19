@@ -13,6 +13,8 @@ pub enum ServerError {
   DbConnectionError,
 
   InternalServerError,
+
+  ResourceNotFound,
 }
 
 impl std::fmt::Display for ServerError {
@@ -20,6 +22,7 @@ impl std::fmt::Display for ServerError {
     match self {
       ServerError::DbConnectionError => write!(f, "{}", "Database Connection Error"),
       ServerError::InternalServerError => write!(f, "{}", "Internal Server Error"),
+      ServerError::ResourceNotFound => write!(f, "{}", "Resource Not Found"),
     }
   }
 }
@@ -34,6 +37,10 @@ impl ResponseError for ServerError {
       ServerError::InternalServerError => HttpResponse::InternalServerError().json(ErrorResponse {
         code: 500,
         message: "Internal Server Error",
+      }),
+      ServerError::ResourceNotFound => HttpResponse::NotFound().json(ErrorResponse {
+        code: 404,
+        message: "Resource Not Found",
       }),
     }
   }

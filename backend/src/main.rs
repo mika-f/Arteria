@@ -57,6 +57,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             // routings
             .configure(web::executors::routings)
+            .configure(web::instances::routings)
             .configure(web::meta::routings)
             .configure(web::root::routings)
     })
