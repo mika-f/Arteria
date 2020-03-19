@@ -15,3 +15,33 @@ pub struct File {
   pub title: String,
   pub content: String,
 }
+
+#[derive(Clone, Debug, Insertable)]
+#[table_name = "files"]
+pub struct NewFile<'a> {
+  pub instance_id: i64,
+  pub title: &'a str,
+  pub content: &'a str,
+}
+
+impl File {
+  pub fn insert(
+    conn: &MysqlConnection,
+    items: Vec<NewFile>,
+  ) -> Result<Vec<File>, diesel::result::Error> {
+    use crate::schema::files::dsl::*;
+
+    let items = conn.transaction::<_, diesel::result::Error, _>(|| {
+      let inserted_count = diesel::insert_into(files).values(items).execute(conn)?;
+
+      Ok(
+        files
+          .order(id.desc())
+          .limit(inserted_count as i64)
+          .get_results(conn)?,
+      )
+    })?;
+
+    Ok(items)
+  }
+}
