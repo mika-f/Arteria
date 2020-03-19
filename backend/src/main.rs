@@ -11,7 +11,6 @@ use harsh;
 mod database;
 mod errors;
 mod models;
-mod routings;
 mod schema;
 mod services;
 mod web;
