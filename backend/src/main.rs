@@ -55,6 +55,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .service(routings::index)
             .service(routings::meta::version)
+            .service(routings::versions)
     })
     .bind(format!("{}:{}", server_bind, server_port))?
     .run()
