@@ -1,6 +1,7 @@
 use actix_web::{web, Error, HttpRequest, HttpResponse, Responder};
 
 use crate::database;
+use crate::errors;
 use crate::services;
 
 pub fn routings(app: &mut web::ServiceConfig) {
@@ -16,7 +17,7 @@ async fn executors(
 
   let executors = web::block(move || services::executors::fetch_executors(&connection))
     .await
-    .map_err(|_| HttpResponse::InternalServerError().finish())?;
+    .map_err(|_| errors::ServerError::InternalServerError)?;
 
   Ok(HttpResponse::Ok().json(executors))
 }

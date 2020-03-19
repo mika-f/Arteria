@@ -1,9 +1,7 @@
 use diesel::prelude::*;
 use serde::Serialize;
 
-use crate::models::Executor;
-
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Queryable, Serialize)]
 pub struct ExecutorResponse {
   name: String,
   tag: String,
@@ -12,14 +10,11 @@ pub struct ExecutorResponse {
 pub fn fetch_executors(
   conn: &MysqlConnection,
 ) -> Result<Vec<ExecutorResponse>, diesel::result::Error> {
-  let versions = Executor::all(conn)?;
-  let executors: Vec<ExecutorResponse> = versions
-    .iter()
-    .map(|w| ExecutorResponse {
-      name: w.name.to_owned(),
-      tag: w.tag.to_owned(),
-    })
-    .collect();
+  use crate::schema::executors::dsl::*;
 
-  Ok(executors)
+  let items = executors
+    .select((name, tag))
+    .load::<ExecutorResponse>(conn)?;
+
+  Ok(items)
 }

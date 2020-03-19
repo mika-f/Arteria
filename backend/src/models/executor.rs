@@ -15,13 +15,6 @@ pub struct Executor {
 }
 
 impl Executor {
-  pub fn all(conn: &MysqlConnection) -> Result<Vec<Executor>, diesel::result::Error> {
-    use crate::schema::executors::dsl::*;
-
-    let items = executors.load::<Executor>(conn)?;
-    Ok(items)
-  }
-
   pub fn find_by_tag(
     conn: &MysqlConnection,
     tag: &str,
