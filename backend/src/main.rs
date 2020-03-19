@@ -11,6 +11,7 @@ use harsh;
 pub mod models;
 mod routings;
 pub mod schema;
+pub mod services;
 mod web;
 
 type DbPool = r2d2::Pool<ConnectionManager<MysqlConnection>>;
@@ -55,9 +56,9 @@ async fn main() -> std::io::Result<()> {
             .data(harsh.clone())
             .wrap(middleware::Logger::default())
             // routings
+            .configure(web::executors::routings)
             .configure(web::meta::routings)
             .configure(web::root::routings)
-            .service(routings::versions::versions)
     })
     .bind(format!("{}:{}", server_bind, server_port))?
     .run()

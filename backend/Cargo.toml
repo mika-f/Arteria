@@ -10,8 +10,9 @@ name = "arteria"
 path = "src/main.rs"
 
 [dependencies]
+actix-http = "1"
+actix-rt = "1"
 actix-web = "2"
-actix-rt= "1"
 bollard = "0.4"
 diesel = { version = "1.4", features = ["mysql", "r2d2"] }
 diesel-derive-enum = { version = "0.4", features = ["mysql"] }
