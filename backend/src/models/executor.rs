@@ -19,11 +19,11 @@ impl Executor {
     conn: &MysqlConnection,
     tag: &str,
   ) -> Result<Option<Executor>, diesel::result::Error> {
-    use crate::schema::executors::dsl::*;
+    use crate::schema::executors::dsl::executors;
 
     let item = executors
       .filter(crate::schema::executors::dsl::tag.eq(tag))
-      .get_result(conn)
+      .first(conn)
       .optional()?;
 
     Ok(item)

@@ -3,7 +3,7 @@ use diesel::*;
 use diesel_derive_enum::*;
 use serde::Serialize;
 
-use crate::models::Version;
+use crate::models::{Dependency, Executor, File};
 use crate::schema::instances;
 
 #[derive(Clone, Debug, DbEnum, Serialize)]
@@ -14,24 +14,35 @@ pub enum InstanceStatus {
   Terminate,
 }
 
-/**
- * Arteria instance
- */
-#[derive(Clone, Debug, Associations, Identifiable, Queryable)]
-#[belongs_to(Version)]
-pub struct Instance {
-  pub id: i64,
-  pub title: String,
-  pub version_id: i32,
-  pub status: InstanceStatus,
-  pub result: Option<String>,
-}
-
 #[derive(Clone, Debug, Insertable)]
 #[table_name = "instances"]
 pub struct NewInstance<'a> {
   pub title: &'a str,
-  pub version_id: i32,
+  pub executor_id: i32,
+  pub status: InstanceStatus,
+  pub result: Option<String>,
+}
+
+impl<'a> NewInstance<'a> {
+  pub fn new(title: &'a str, executor_id: i32) -> Self {
+    NewInstance {
+      title,
+      executor_id,
+      status: InstanceStatus::Running,
+      result: None,
+    }
+  }
+}
+
+/**
+ * Arteria instance
+ */
+#[derive(Clone, Debug, Associations, Identifiable, Queryable)]
+#[belongs_to(Executor)]
+pub struct Instance {
+  pub id: i64,
+  pub title: String,
+  pub executor_id: i32,
   pub status: InstanceStatus,
   pub result: Option<String>,
 }
@@ -44,33 +55,50 @@ pub struct InstanceChangeset {
   pub result: Option<String>,
 }
 
+#[derive(Clone, Debug)]
+pub struct InstanceObject {
+  pub id: i64,
+  pub title: String,
+  pub status: InstanceStatus,
+  pub result: Option<String>,
+
+  // relationships
+  pub executor: Executor,
+  pub dependencies: Vec<Dependency>,
+  pub files: Vec<File>,
+}
+
 impl Instance {
   pub fn find(
     conn: &MysqlConnection,
     instance_id: i64,
-  ) -> Result<Option<Instance>, diesel::result::Error> {
+  ) -> Result<Option<InstanceObject>, diesel::result::Error> {
+    use crate::schema::executors::dsl::*;
     use crate::schema::instances::dsl::*;
 
     let item = instances
       .find(instance_id)
-      .get_result::<Instance>(conn)
+      .inner_join(executors)
+      .get_result::<(Instance, Executor)>(conn)
       .optional()?;
-    Ok(item)
-  }
 
-  pub fn find_with_version(
-    conn: &MysqlConnection,
-    instance_id: i64,
-  ) -> Result<Option<(Instance, Version)>, diesel::result::Error> {
-    use crate::schema::instances::dsl::*;
-    use crate::schema::versions::dsl::*;
+    let (instance, executor) = match item {
+      Some(values) => values,
+      None => return Ok(None),
+    };
 
-    let item = instances
-      .find(instance_id)
-      .inner_join(versions)
-      .get_result::<(Instance, Version)>(conn)
-      .optional()?;
-    Ok(item)
+    let dependencies = Dependency::belonging_to(&instance).load::<Dependency>(conn)?;
+    let files = File::belonging_to(&instance).load::<File>(conn)?;
+
+    Ok(Some(InstanceObject {
+      id: instance.id,
+      title: instance.title,
+      status: instance.status,
+      result: instance.result,
+      executor,
+      dependencies,
+      files,
+    }))
   }
 
   pub fn insert(

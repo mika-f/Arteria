@@ -4,6 +4,24 @@ use diesel::*;
 use crate::models::Instance;
 use crate::schema::files;
 
+#[derive(Clone, Debug, Insertable)]
+#[table_name = "files"]
+pub struct NewFile<'a> {
+  pub instance_id: i64,
+  pub title: &'a str,
+  pub content: &'a str,
+}
+
+impl<'a> NewFile<'a> {
+  pub fn new(instance_id: i64, title: &'a str, content: &'a str) -> Self {
+    NewFile {
+      instance_id,
+      title,
+      content,
+    }
+  }
+}
+
 /**
  * Perl files that related to instance
  */
@@ -14,14 +32,6 @@ pub struct File {
   pub instance_id: i64,
   pub title: String,
   pub content: String,
-}
-
-#[derive(Clone, Debug, Insertable)]
-#[table_name = "files"]
-pub struct NewFile<'a> {
-  pub instance_id: i64,
-  pub title: &'a str,
-  pub content: &'a str,
 }
 
 impl File {
