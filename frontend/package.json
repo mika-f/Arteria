@@ -6,15 +6,30 @@
   "author": "Fuyuno Mikazuki",
   "license": "AGPL-3.0",
   "private": true,
+  "scripts": {
+    "start": "parcel serve --cache-dir .cache public/index.html",
+    "build": "yarn build:app && yarn build:sw",
+    "build:app": "parcel build --cache-dir .cache public/index.html",
+    "build:sw": "parcel build --cache-dir .cache src/service-worker.ts"
+  },
   "dependencies": {
+    "@monaco-editor/react": "^3.1.2",
+    "i18next": "^19.3.3",
+    "i18next-browser-languagedetector": "^4.0.2",
+    "i18next-xhr-backend": "^3.2.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-helmet": "^5.2.1",
+    "react-i18next": "^11.3.3",
+    "react-router-dom": "^5.1.2",
     "styled-components": "^5.0.1",
     "use-http": "^0.3.8"
   },
   "devDependencies": {
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.5",
+    "@types/react-helmet": "^5.0.15",
+    "@types/react-router-dom": "^5.1.3",
     "@types/styled-components": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",

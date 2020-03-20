@@ -2,6 +2,7 @@
   "extends": [
     // prettier-ignore
     "airbnb",
+    "plugin:jest/recommended",
     "plugin:import/typescript",
     "plugin:prettier/recommended"
   ],
