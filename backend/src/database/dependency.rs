@@ -42,33 +42,3 @@ impl Handler<FetchDependenciesByInstanceId> for DbExecutor {
     Ok(items)
   }
 }
-
-#[derive(Debug)]
-pub struct BulkInsertDependencies(Vec<NewDependency>);
-
-impl BulkInsertDependencies {
-  pub fn new(dependencies: Vec<NewDependency>) -> Self {
-    BulkInsertDependencies(dependencies)
-  }
-}
-
-impl Message for BulkInsertDependencies {
-  type Result = Result<(), ServerError>;
-}
-
-impl Handler<BulkInsertDependencies> for DbExecutor {
-  type Result = Result<(), ServerError>;
-
-  fn handle(&mut self, msg: BulkInsertDependencies, _: &mut Self::Context) -> Self::Result {
-    use crate::schema::dependencies::dsl::*;
-
-    let connection = extract_db_connection(self)?;
-
-    diesel::insert_into(dependencies)
-      .values(msg.0)
-      .execute(&connection)
-      .map_err(|_| ServerError::DbExecutionError)?;
-
-    Ok(())
-  }
-}

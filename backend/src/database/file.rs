@@ -35,33 +35,3 @@ impl Handler<FetchFilesByInstanceId> for DbExecutor {
     Ok(items)
   }
 }
-
-#[derive(Debug)]
-pub struct BulkInsertFiles(Vec<NewFile>);
-
-impl BulkInsertFiles {
-  pub fn new(files: Vec<NewFile>) -> Self {
-    BulkInsertFiles(files)
-  }
-}
-
-impl Message for BulkInsertFiles {
-  type Result = Result<(), ServerError>;
-}
-
-impl Handler<BulkInsertFiles> for DbExecutor {
-  type Result = Result<(), ServerError>;
-
-  fn handle(&mut self, msg: BulkInsertFiles, _: &mut Self::Context) -> Self::Result {
-    use crate::schema::files::dsl::*;
-
-    let connection = extract_db_connection(self)?;
-
-    diesel::insert_into(files)
-      .values(msg.0)
-      .execute(&connection)
-      .map_err(|_| ServerError::DbExecutionError)?;
-
-    Ok(())
-  }
-}
