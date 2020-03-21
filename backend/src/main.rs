@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate diesel;
 
+use std::env;
+use std::fs;
 use actix_web::{middleware, App, HttpServer};
 use bollard::Docker;
 use diesel::prelude::*;
@@ -9,6 +11,7 @@ use dotenv;
 use harsh;
 
 mod database;
+mod dirs;
 mod errors;
 mod models;
 mod schema;
@@ -20,15 +23,17 @@ async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     env_logger::init();
 
-    let server_bind = std::env::var("ARTERIA_BIND").expect("ARTERIA_BIND not set");
-    let server_port = std::env::var("ARTERIA_PORT").expect("ARTERIA_PORT not set");
+    create_reserved_directories();
+
+    let server_bind = env::var("ARTERIA_BIND").expect("ARTERIA_BIND not set");
+    let server_port = env::var("ARTERIA_PORT").expect("ARTERIA_PORT not set");
 
     let database_host = format!(
         "mysql://{}:{}@{}:{}/arteria",
-        std::env::var("ARTERIA_DATABASE_USER").expect("ARTERIA_DATABASE_USER not set"),
-        std::env::var("ARTERIA_DATABASE_PASS").expect("ARTERIA_DATABASE_PASS not set"),
-        std::env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set"),
-        std::env::var("ARTERIA_DATABASE_PORT").expect("ARTERIA_DATABASE_PORT not set"),
+        env::var("ARTERIA_DATABASE_USER").expect("ARTERIA_DATABASE_USER not set"),
+        env::var("ARTERIA_DATABASE_PASS").expect("ARTERIA_DATABASE_PASS not set"),
+        env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set"),
+        env::var("ARTERIA_DATABASE_PORT").expect("ARTERIA_DATABASE_PORT not set"),
     );
 
     // database connection
@@ -43,7 +48,7 @@ async fn main() -> std::io::Result<()> {
 
     // id generator
     let harsh = harsh::HarshBuilder::new()
-        .salt(std::env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT not set"))
+        .salt(env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT not set"))
         .length(10)
         .init()
         .expect("Failed to create hash id builder");
@@ -63,4 +68,12 @@ async fn main() -> std::io::Result<()> {
     .bind(format!("{}:{}", server_bind, server_port))?
     .run()
     .await
+}
+
+fn create_reserved_directories() {
+    // create a cache directory for installed modules
+    fs::create_dir(dirs::cache_dir().to_str().unwrap()).unwrap();
+
+    // create a project directory for executing source codes
+    fs::create_dir(dirs::temp_dir().to_str().unwrap()).unwrap();
 }
