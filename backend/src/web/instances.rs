@@ -1,122 +1,99 @@
-use actix_web::{web, HttpRequest, HttpResponse, Responder};
-use harsh::Harsh;
-use serde::{Deserialize, Serialize};
+use std::sync::Mutex;
 
-use crate::database;
+use actix_web::{web, Error, HttpRequest, HttpResponse, Responder};
+use harsh::Harsh;
+
 use crate::errors;
+use crate::executors::PerlExecutor;
+use crate::models::InstanceRequest;
 use crate::services;
+use crate::AppState;
 
 pub fn routings(app: &mut web::ServiceConfig) {
   app.service(get_instance).service(create_instance);
 }
 
-#[derive(Clone, Debug, Deserialize)]
-pub struct InstanceDependencyPayload {
-  name_with_version: String,
-}
+#[actix_web::get("/instances/{instance_id}")]
+async fn get_instance(
+  _: HttpRequest,
+  state: web::Data<AppState>,
+  harsh: web::Data<Harsh>,
+  instance_id: web::Path<String>,
+) -> Result<impl Responder, Error> {
+  let instance_id: u64 = match harsh.decode(&instance_id.into_inner()) {
+    Some(value) => value[0],
+    None => return Err(errors::ServerError::InternalServerError.into()),
+  };
 
-impl services::instance::DependencyPayload for InstanceDependencyPayload {
-  fn name_with_version(&self) -> &str {
-    &self.name_with_version
-  }
-}
+  let db = state.db.clone();
+  let instance = services::instance::fetch_instance(db, instance_id as i64).await?;
 
-#[derive(Clone, Debug, Deserialize)]
-pub struct InstanceFilePayload {
-  title: String,
-  content: String,
-}
-
-impl services::instance::FilePayload for InstanceFilePayload {
-  fn title(&self) -> &str {
-    &self.title
-  }
-
-  fn content(&self) -> &str {
-    &self.content
-  }
-}
-
-#[derive(Clone, Debug, Deserialize)]
-pub struct InstancePayload {
-  title: String,
-  executor: String,
-  dependencies: Vec<InstanceDependencyPayload>,
-  files: Vec<InstanceFilePayload>,
-}
-
-impl services::instance::InstancePayload<InstanceDependencyPayload, InstanceFilePayload>
-  for InstancePayload
-{
-  fn title(&self) -> &str {
-    &self.title
-  }
-
-  fn executor_str(&self) -> &str {
-    &self.executor
-  }
-
-  fn dependencies(&self) -> Vec<&InstanceDependencyPayload> {
-    self.dependencies.iter().collect()
-  }
-
-  fn files(&self) -> Vec<&InstanceFilePayload> {
-    self.files.iter().collect()
-  }
-}
-
-#[derive(Clone, Debug, Serialize)]
-pub struct InstanceMinimalResponse {
-  instance_id: String,
+  Ok(HttpResponse::Ok().json(instance))
 }
 
 #[actix_web::post("/instances")]
 async fn create_instance(
   _: HttpRequest,
+  state: web::Data<AppState>,
+  executor: web::Data<Mutex<PerlExecutor>>,
+  data: web::Json<InstanceRequest>,
+) -> Result<impl Responder, Error> {
+  let db = state.db.clone();
+
+  let (instance_id, instance) = services::instance::create_instance(db, data.into_inner()).await?;
+
+  let rx = executor.lock().unwrap().execute(instance_id, instance);
+
+  Ok(
+    HttpResponse::Ok()
+      .header("Content-Type", "text/event-stream")
+      .no_chunking()
+      .streaming(rx),
+  )
+}
+
+/*
+#[derive(Clone, Debug, Serialize)]
+pub struct InstanceMinimalResponse {
+  instance_id: String,
+}
+*/
+
+/*
+#[actix_web::post("/instances")]
+async fn create_instance(
+  _: HttpRequest,
   db: web::Data<database::DbPool>,
   harsh: web::Data<Harsh>,
-  payload: web::Json<InstancePayload>,
+  runner: web::Data<Mutex<services::instance_runner::InstanceRunner>>,
+  payload: web::Json<InstanceJson>,
 ) -> Result<impl Responder, errors::ServerError> {
   let connection = database::extract_connection(db)?;
+  let payload = payload.into_inner();
 
-  let instance_id =
-    web::block(move || services::instance::create_instance(&connection, payload.into_inner()))
+  let instance =
+    web::block(move || services::instance::create_instance(&connection, payload.clone()))
       .await
       .map_err(|_| errors::ServerError::InternalServerError)?;
 
-  if instance_id.is_none() {
+  if instance.is_none() {
     return Err(errors::ServerError::InternalServerError);
   }
 
-  let instance_id = match harsh.encode(&[instance_id.unwrap() as u64]) {
+  let instance = instance.unwrap();
+
+  let instance_id = match harsh.encode(&[instance.id as u64]) {
     Some(value) => value,
     None => return Err(errors::ServerError::InternalServerError),
   };
 
-  Ok(HttpResponse::Ok().json(InstanceMinimalResponse { instance_id }))
+  let rx = runner.lock().unwrap().new_runner(&instance_id, instance);
+
+  Ok(
+    HttpResponse::Ok()
+      .header("Content-Type", "text/event-stream")
+      .no_chunking()
+      .streaming(rx),
+  )
 }
-
-#[actix_web::get("/instances/{instance_id}")]
-async fn get_instance(
-  _: HttpRequest,
-  db: web::Data<database::DbPool>,
-  harsh: web::Data<Harsh>,
-  instance_id: web::Path<String>,
-) -> Result<impl Responder, errors::ServerError> {
-  let connection = database::extract_connection(db)?;
-
-  let instance_id: u64 = match harsh.decode(&instance_id.into_inner()) {
-    Some(value) => value[0],
-    None => return Err(errors::ServerError::InternalServerError),
-  };
-
-  let instance = web::block(move || services::instance::fetch_instance(&connection, instance_id))
-    .await
-    .map_err(|_| errors::ServerError::InternalServerError)?;
-
-  if instance.is_none() {
-    return Err(errors::ServerError::ResourceNotFound);
-  }
-
-  Ok(HttpResponse::Ok().json(instance.unwrap()))
-}
+*/

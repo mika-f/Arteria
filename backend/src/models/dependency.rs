@@ -1,26 +1,10 @@
-use diesel::prelude::*;
 use diesel::*;
+use serde::{Deserialize, Serialize};
 
 use crate::models::Instance;
 use crate::schema::dependencies;
 
-#[derive(Clone, Debug, Insertable)]
-#[table_name = "dependencies"]
-pub struct NewDependency<'a> {
-  pub instance_id: i64,
-  pub name_with_version: &'a str,
-}
-
-impl<'a> NewDependency<'a> {
-  pub fn new(instance_id: i64, name_with_version: &'a str) -> Self {
-    NewDependency {
-      instance_id,
-      name_with_version,
-    }
-  }
-}
-
-#[derive(Clone, Debug, Associations, Identifiable, Queryable)]
+#[derive(Clone, Debug, Associations, Identifiable, Queryable, Serialize, Deserialize)]
 #[table_name = "dependencies"]
 #[belongs_to(Instance)]
 pub struct Dependency {
@@ -29,26 +13,14 @@ pub struct Dependency {
   pub name_with_version: String,
 }
 
-impl Dependency {
-  pub fn insert(
-    conn: &MysqlConnection,
-    items: Vec<NewDependency>,
-  ) -> Result<Vec<Dependency>, diesel::result::Error> {
-    use crate::schema::dependencies::dsl::*;
+#[derive(Clone, Debug, Queryable, Serialize, Deserialize)]
+pub struct DependencySlim {
+  pub name_with_version: String,
+}
 
-    let items = conn.transaction::<_, diesel::result::Error, _>(|| {
-      let inserted_count = diesel::insert_into(dependencies)
-        .values(items)
-        .execute(conn)?;
-
-      Ok(
-        dependencies
-          .order(id.desc())
-          .limit(inserted_count as i64)
-          .get_results(conn)?,
-      )
-    })?;
-
-    Ok(items)
-  }
+#[derive(Clone, Debug, Insertable, Serialize, Deserialize)]
+#[table_name = "dependencies"]
+pub struct NewDependency {
+  pub instance_id: i64,
+  pub name_with_version: String,
 }

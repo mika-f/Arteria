@@ -1,5 +1,5 @@
-use diesel::prelude::*;
 use diesel::*;
+use serde::{Deserialize, Serialize};
 
 use crate::schema::executors;
 
@@ -14,18 +14,8 @@ pub struct Executor {
   pub tag: String,
 }
 
-impl Executor {
-  pub fn find_by_tag(
-    conn: &MysqlConnection,
-    tag: &str,
-  ) -> Result<Option<Executor>, diesel::result::Error> {
-    use crate::schema::executors::dsl::executors;
-
-    let item = executors
-      .filter(crate::schema::executors::dsl::tag.eq(tag))
-      .first(conn)
-      .optional()?;
-
-    Ok(item)
-  }
+#[derive(Debug, Clone, Queryable, Serialize, Deserialize)]
+pub struct ExecutorResponse {
+  pub name: String,
+  pub tag: String,
 }

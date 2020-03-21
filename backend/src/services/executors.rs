@@ -1,20 +1,13 @@
-use diesel::prelude::*;
-use serde::Serialize;
+use actix::*;
+use actix_web::Error;
 
-#[derive(Clone, Debug, Queryable, Serialize)]
-pub struct ExecutorResponse {
-  name: String,
-  tag: String,
-}
+use crate::database::executor::FetchExecutors;
+use crate::database::DbExecutor;
 
-pub fn fetch_executors(
-  conn: &MysqlConnection,
-) -> Result<Vec<ExecutorResponse>, diesel::result::Error> {
-  use crate::schema::executors::dsl::*;
+use crate::models::ExecutorResponse;
 
-  let items = executors
-    .select((name, tag))
-    .load::<ExecutorResponse>(conn)?;
+pub async fn fetch_executors(database: Addr<DbExecutor>) -> Result<Vec<ExecutorResponse>, Error> {
+  let items = database.send(FetchExecutors {}).await??;
 
   Ok(items)
 }

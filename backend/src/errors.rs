@@ -12,6 +12,8 @@ pub struct ErrorResponse<'a> {
 pub enum ServerError {
   DbConnectionError,
 
+  DbExecutionError,
+
   InternalServerError,
 
   ResourceNotFound,
@@ -21,6 +23,7 @@ impl std::fmt::Display for ServerError {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
     match self {
       ServerError::DbConnectionError => write!(f, "{}", "Database Connection Error"),
+      ServerError::DbExecutionError => write!(f, "{}", "Database Execution Error"),
       ServerError::InternalServerError => write!(f, "{}", "Internal Server Error"),
       ServerError::ResourceNotFound => write!(f, "{}", "Resource Not Found"),
     }
@@ -32,7 +35,11 @@ impl ResponseError for ServerError {
     match self {
       ServerError::DbConnectionError => HttpResponse::InternalServerError().json(ErrorResponse {
         code: 100,
-        message: "Failed to connect to database",
+        message: "Internal Server Error",
+      }),
+      ServerError::DbExecutionError => HttpResponse::InternalServerError().json(ErrorResponse {
+        code: 101,
+        message: "Internal Server Error",
       }),
       ServerError::InternalServerError => HttpResponse::InternalServerError().json(ErrorResponse {
         code: 500,
