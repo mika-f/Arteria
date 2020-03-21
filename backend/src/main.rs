@@ -90,8 +90,14 @@ async fn main() -> std::io::Result<()> {
 
 fn create_reserved_directories() {
     // create a cache directory for installed modules
-    fs::create_dir(dirs::cache_dir().to_str().unwrap()).unwrap();
+    let cache_dir = dirs::cache_dir();
+    if !cache_dir.exists() {
+        fs::create_dir(cache_dir.to_str().unwrap()).unwrap();
+    }
 
     // create a project directory for executing source codes
-    fs::create_dir(dirs::temp_dir().to_str().unwrap()).unwrap();
+    let temp_dir = dirs::temp_dir();
+    if !temp_dir.exists() {
+        fs::create_dir(temp_dir.to_str().unwrap()).unwrap();
+    }
 }
