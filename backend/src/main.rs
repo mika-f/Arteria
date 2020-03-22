@@ -17,6 +17,7 @@ mod database;
 mod dirs;
 mod docker;
 mod errors;
+mod executors;
 mod models;
 mod schema;
 mod services;
@@ -68,8 +69,12 @@ async fn main() -> std::io::Result<()> {
         .init()
         .expect("Failed to create hash id builder");
 
+    // instance runner
+    let executor = executors::PerlExecutor::create(db_addr.clone(), docker_addr.clone());
+
     HttpServer::new(move || {
         App::new()
+            .app_data(executor.clone())
             .data(AppState {
                 db: db_addr.clone(),
                 docker: docker_addr.clone(),

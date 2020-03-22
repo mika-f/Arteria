@@ -6,6 +6,8 @@ use crate::database::DbExecutor;
 
 use crate::models::ExecutorResponse;
 
+pub mod perl;
+
 pub async fn fetch_executors(database: Addr<DbExecutor>) -> Result<Vec<ExecutorResponse>, Error> {
   let items = database.send(FetchExecutors {}).await??;
 
