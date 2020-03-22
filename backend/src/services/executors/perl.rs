@@ -28,10 +28,17 @@ pub async fn execute(
 
   create_deps_file(&path, &instance).unwrap();
 
-  for log in execute_installer(uuid, &path, docker.clone(), &instance, &executor)
-    .await
-    .unwrap()
-    .iter()
+  for log in execute_installer(
+    uuid,
+    &path,
+    tx.clone(),
+    docker.clone(),
+    &instance,
+    &executor,
+  )
+  .await
+  .unwrap()
+  .iter()
   {
     logs.push(log.to_owned());
     safe_send(tx.clone(), Event::Message, Some(log.to_owned())).unwrap();
@@ -39,7 +46,7 @@ pub async fn execute(
 
   create_project_file(&path, &instance).unwrap();
 
-  for log in execute_executor(uuid, &path, docker.clone(), &executor)
+  for log in execute_executor(uuid, &path, tx.clone(), docker.clone(), &executor)
     .await
     .unwrap()
     .iter()
@@ -150,6 +157,7 @@ fn cleanup_project_directory(path: &PathBuf) -> Result<(), Box<dyn error::Error>
 async fn execute_installer(
   uuid: Uuid,
   path: &PathBuf,
+  tx: Sender<Bytes>,
   docker: Addr<DockerExecutor>,
   instance: &InstanceResponse,
   executor: &Executor,
@@ -167,11 +175,9 @@ async fn execute_installer(
     .send(ExecuteContainer {
       name: format!("arteria-{}-installer", uuid.to_string()),
       cmd: vec!["./run.sh".to_owned()],
-      env: Some(vec![
-        "PERL5LIB=./local/lib/perl5".to_owned(),
-        "PERL_CARMEL_REPO=/usr/local/PROJECT/caches".to_owned(),
-      ]),
       image: format!("{}:{}", executor.image, executor.tag),
+
+      // optionals
       bindings: Some(vec![
         // project directory
         format!(
@@ -186,7 +192,12 @@ async fn execute_installer(
           "/usr/local/PROJECT/caches".to_owned()
         ),
       ]),
-      cpus: Some(500000000),                   // 0.5 cpus
+      cpus: Some(500000000), // 0.5 cpus
+      env: Some(vec![
+        "PERL5LIB=./local/lib/perl5".to_owned(),
+        "PERL_CARMEL_REPO=/usr/local/PROJECT/caches".to_owned(),
+      ]),
+      logger: Some(tx.clone()),
       memory: Some(256000000),                 // 256MB
       network_mode: Some("bridge".to_owned()), // accept network connection
       ulimits: None,
@@ -206,6 +217,7 @@ async fn execute_installer(
 async fn execute_executor(
   uuid: Uuid,
   path: &PathBuf,
+  tx: Sender<Bytes>,
   docker: Addr<DockerExecutor>,
   executor: &Executor,
 ) -> Result<Vec<String>, ()> {
@@ -221,7 +233,8 @@ async fn execute_executor(
         path.to_str().unwrap(),
         "/usr/local/PROJECT/workspace"
       )]),
-      cpus: Some(250000000),                 // 0.25 cpus
+      cpus: Some(250000000), // 0.25 cpus
+      logger: Some(tx.clone()),
       memory: Some(128000000),               // 128MB
       network_mode: Some("none".to_owned()), // Network is disabled
       ulimits: None,                         // I want to limit processes to: { soft: 16, hard: 32}
