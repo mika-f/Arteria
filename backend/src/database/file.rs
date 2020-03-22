@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use super::{extract_db_connection, DbExecutor};
 use crate::errors::ServerError;
-use crate::models::{FileSlim, NewFile};
+use crate::models::FileSlim;
 
 #[derive(Debug)]
 pub struct FetchFilesByInstanceId(i64);

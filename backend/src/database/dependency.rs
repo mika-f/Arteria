@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use super::{extract_db_connection, DbExecutor};
 use crate::errors::ServerError;
-use crate::models::{DependencySlim, NewDependency};
+use crate::models::DependencySlim;
 
 #[derive(Debug)]
 pub struct FetchDependenciesByInstanceId(i64);
