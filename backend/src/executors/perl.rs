@@ -12,7 +12,7 @@ use super::{to_bytes, Client, Event, ExecutorEvent, HeartbeatEvent};
 use crate::database::instance::UpdateInstance;
 use crate::database::DbExecutor;
 use crate::docker::DockerExecutor;
-use crate::models::{InstanceChangeset, InstanceResponse, InstanceStatus};
+use crate::models::{Executor, InstanceChangeset, InstanceResponse, InstanceStatus};
 use crate::services;
 
 pub struct PerlExecutor {
@@ -61,23 +61,34 @@ impl PerlExecutor {
     self.clients = lived_clients;
   }
 
-  pub fn execute(&mut self, id: i64, instance: InstanceResponse) -> Client {
+  pub fn execute(&mut self, id: i64, instance: InstanceResponse, executor: Executor) -> Client {
     let (tx, rx) = channel(100);
 
     self.clients.push(tx.clone());
 
-    self.spawn_task(tx.clone(), id, instance.clone());
+    self.spawn_task(tx.clone(), id, instance.clone(), executor.clone());
 
     Client(rx)
   }
 
-  fn spawn_task(&mut self, tx: Sender<Bytes>, instance_id: i64, instance: InstanceResponse) {
+  fn spawn_task(
+    &mut self,
+    tx: Sender<Bytes>,
+    instance_id: i64,
+    instance: InstanceResponse,
+    executor: Executor,
+  ) {
     let database = self.db.clone();
     let docker = self.docker.clone();
 
     actix_rt::spawn(async move {
-      let r =
-        services::executors::perl::execute(tx.clone(), docker.clone(), instance.clone()).await;
+      let r = services::executors::perl::execute(
+        tx.clone(),
+        docker.clone(),
+        instance.clone(),
+        executor.clone(),
+      )
+      .await;
 
       let _ = match r {
         Ok(value) => {
@@ -87,7 +98,7 @@ impl PerlExecutor {
               InstanceChangeset {
                 title: None,
                 status: Some(InstanceStatus::Success),
-                result: Some(value.join("")),
+                result: Some(value.join("\n")),
               },
             ))
             .await

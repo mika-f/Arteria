@@ -40,9 +40,13 @@ async fn create_instance(
 ) -> Result<impl Responder, Error> {
   let db = state.db.clone();
 
-  let (instance_id, instance) = services::instance::create_instance(db, data.into_inner()).await?;
+  let (instance_id, instance, container) =
+    services::instance::create_instance(db, data.into_inner()).await?;
 
-  let rx = executor.lock().unwrap().execute(instance_id, instance);
+  let rx = executor
+    .lock()
+    .unwrap()
+    .execute(instance_id, instance, container);
 
   Ok(
     HttpResponse::Ok()
