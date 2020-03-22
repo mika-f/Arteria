@@ -14,6 +14,10 @@ pub enum ServerError {
 
   DbExecutionError,
 
+  DockerConnectionError,
+
+  DockerExecutionError,
+
   InternalServerError,
 
   ResourceNotFound,
@@ -24,6 +28,8 @@ impl std::fmt::Display for ServerError {
     match self {
       ServerError::DbConnectionError => write!(f, "{}", "Database Connection Error"),
       ServerError::DbExecutionError => write!(f, "{}", "Database Execution Error"),
+      ServerError::DockerConnectionError => write!(f, "{}", "Docker Connection Error"),
+      ServerError::DockerExecutionError => write!(f, "{}", "Docker Execution Error"),
       ServerError::InternalServerError => write!(f, "{}", "Internal Server Error"),
       ServerError::ResourceNotFound => write!(f, "{}", "Resource Not Found"),
     }
@@ -41,6 +47,18 @@ impl ResponseError for ServerError {
         code: 101,
         message: "Internal Server Error",
       }),
+      ServerError::DockerConnectionError => {
+        HttpResponse::InternalServerError().json(ErrorResponse {
+          code: 200,
+          message: "Internal Server Error",
+        })
+      }
+      ServerError::DockerExecutionError => {
+        HttpResponse::InternalServerError().json(ErrorResponse {
+          code: 201,
+          message: "Internal Server Error",
+        })
+      }
       ServerError::InternalServerError => HttpResponse::InternalServerError().json(ErrorResponse {
         code: 500,
         message: "Internal Server Error",
