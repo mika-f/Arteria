@@ -156,12 +156,7 @@ async fn execute_executor(
     .clone()
     .send(ExecuteContainer {
       name: uuid.to_string(),
-      cmd: vec![
-        "timeout".to_owned(),
-        "60".to_owned(),
-        "perl".to_owned(),
-        "main.pl".to_owned(),
-      ],
+      cmd: vec!["perl".to_owned(), "main.pl".to_owned()],
       env: Some(vec!["PERL5LIB=./local/lib/perl5:./lib".to_owned()]),
       image: format!("{}:{}", executor.image, executor.tag),
       bindings: Some(vec![format!(
