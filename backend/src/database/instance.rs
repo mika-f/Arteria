@@ -3,7 +3,7 @@ use diesel::prelude::*;
 
 use super::{extract_db_connection, DbExecutor};
 use crate::errors::ServerError;
-use crate::models::{Executor, Instance, InstanceWithExecutor};
+use crate::models::{Executor, Instance, InstanceChangeset, InstanceWithExecutor};
 
 #[derive(Debug)]
 pub struct FetchInstance(i64);
@@ -45,5 +45,35 @@ impl Handler<FetchInstance> for DbExecutor {
       status: instance.status,
       result: instance.result,
     }))
+  }
+}
+
+#[derive(Debug)]
+pub struct UpdateInstance(i64, InstanceChangeset);
+
+impl UpdateInstance {
+  pub fn new(instance_id: i64, changeset: InstanceChangeset) -> Self {
+    UpdateInstance(instance_id, changeset)
+  }
+}
+
+impl Message for UpdateInstance {
+  type Result = Result<(), ServerError>;
+}
+
+impl Handler<UpdateInstance> for DbExecutor {
+  type Result = Result<(), ServerError>;
+
+  fn handle(&mut self, msg: UpdateInstance, _: &mut Self::Context) -> Self::Result {
+    use crate::schema::instances::dsl::*;
+
+    let connection = extract_db_connection(self)?;
+
+    diesel::update(instances::find(instances, msg.0)) // Why required 1st argument?
+      .set(msg.1)
+      .execute(&connection)
+      .map_err(|_| ServerError::DbExecutionError)?;
+
+    Ok(())
   }
 }
