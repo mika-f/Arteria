@@ -121,7 +121,7 @@ impl PerlExecutor {
       tx.clone()
         .try_send(to_bytes(ExecutorEvent::<String> {
           event: Event::Command,
-          data: Some("close".to_owned()),
+          data: Some("system: close".to_owned()),
         }))
         .unwrap();
     })
