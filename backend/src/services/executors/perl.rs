@@ -41,7 +41,6 @@ pub async fn execute(
   .iter()
   {
     logs.push(log.to_owned());
-    safe_send(tx.clone(), Event::Message, Some(log.to_owned())).unwrap();
   }
 
   create_project_file(&path, &instance).unwrap();
@@ -52,7 +51,6 @@ pub async fn execute(
     .iter()
   {
     logs.push(log.to_owned());
-    safe_send(tx.clone(), Event::Message, Some(log.to_owned())).unwrap();
   }
 
   cleanup_project_directory(&path).unwrap();
