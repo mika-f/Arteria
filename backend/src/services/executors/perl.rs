@@ -112,7 +112,6 @@ fn create_deps_file(
       "\
 #!/bin/sh
 
-cpanm --notest Carton
 cpanm --notest Carmel
 carmel install && carmel rollout\
   "
