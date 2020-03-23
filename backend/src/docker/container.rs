@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 
 use actix::prelude::*;
-use actix_rt;
 use actix_web::web::Bytes;
 use bollard::container::*;
 use futures::stream::StreamExt;
@@ -121,8 +120,24 @@ impl Handler<ExecuteContainer> for DockerExecutor {
                 );
               }
             }
-            LogOutput::StdErr { message } => logs.push(format!("stderr: {}", message)),
-            LogOutput::Console { message } => logs.push(format!("stdout: {}", message)),
+            LogOutput::StdErr { message } => {
+              logs.push(format!("stderr: {}", message));
+              if has_logger {
+                send_logs(
+                  msg.logger.clone().unwrap().clone(),
+                  format!("stderr: {}", message),
+                );
+              }
+            }
+            LogOutput::Console { message } => {
+              logs.push(format!("stdout: {}", message));
+              if has_logger {
+                send_logs(
+                  msg.logger.clone().unwrap().clone(),
+                  format!("stdout: {}", message),
+                );
+              }
+            }
             LogOutput::StdIn { message: _ } => {}
           },
           Err(_) => return Err(ServerError::DockerExecutionError),
