@@ -28,6 +28,7 @@ pub struct ExecuteContainer {
   pub logger: Option<Sender<Bytes>>,
   pub memory: Option<u64>,
   pub network_mode: Option<String>,
+  pub runtime: Option<String>,
   pub timeout: Option<u64>,
   pub ulimits: Option<Vec<HashMap<String, String>>>,
   pub working_dir: Option<String>,
@@ -78,6 +79,7 @@ impl Handler<ExecuteContainer> for DockerExecutor {
             host_config: Some(HostConfig::<String> {
               auto_remove: Some(true),
               binds: msg.bindings,
+              runtime: msg.runtime,
               memory: msg.memory,
               nano_cpus: msg.cpus,
               // ulimits: msg.ulimits,

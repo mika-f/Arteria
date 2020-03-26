@@ -197,6 +197,7 @@ async fn execute_installer(
       logger: Some(tx.clone()),
       memory: Some(256000000),                 // 256MB
       network_mode: Some("bridge".to_owned()), // accept network connection
+      runtime: None,
       timeout: None,
       ulimits: None,
       working_dir: Some("/usr/local/PROJECT/workspace".to_owned()),
@@ -235,6 +236,7 @@ async fn execute_executor(
       logger: Some(tx.clone()),
       memory: Some(128000000),               // 128MB
       network_mode: Some("none".to_owned()), // Network is disabled
+      runtime: None,                         // I want to use gVisor for container runtime
       timeout: Some(10),                     // timeout 10 seconds
       ulimits: None,                         // I want to limit processes to: { soft: 16, hard: 32}
       working_dir: Some("/usr/local/PROJECT/workspace".to_owned()),
