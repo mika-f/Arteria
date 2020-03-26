@@ -8,6 +8,7 @@ The goal of this project is to create a Perl version of RunKit.
 * Rust 1.42.0 or higher
 * Node.js 10.x or higher
 * Docker (Server API version 1.40)
+* MySQL 8.x or higher
 
 ## Environment Variables
 
