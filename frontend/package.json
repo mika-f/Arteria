@@ -7,18 +7,18 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "start": "parcel serve --cache-dir .cache public/index.html",
-    "build": "yarn build:app && yarn build:sw",
-    "build:app": "parcel build --cache-dir .cache public/index.html",
-    "build:sw": "parcel build --cache-dir .cache src/service-worker.ts"
+    "start": "webpack-dev-server --config webpack.config.js --content-base public/ --watch-content-base --hot --open",
+    "build": "webpack --config webpack.config.js --mode production",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@mika-f/monaka": "^0.1.0",
     "@monaco-editor/react": "^3.1.2",
     "i18next": "^19.3.3",
     "i18next-browser-languagedetector": "^4.0.2",
     "i18next-xhr-backend": "^3.2.2",
+    "monaco-editor": "^0.20.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-helmet": "^5.2.1",
@@ -52,7 +52,6 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
-    "parcel": "^1.12.4",
     "file-loader": "^6.0.0",
     "monaco-editor-webpack-plugin": "^1.9.0",
     "prettier": "^1.19.1",
@@ -65,5 +64,8 @@
     "stylelint-processor-styled-components": "^1.10.0",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }
