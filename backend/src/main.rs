@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate diesel;
 
-use std::env;
 use std::fs;
 
 use actix::prelude::*;
@@ -21,6 +20,7 @@ mod executors;
 mod models;
 mod schema;
 mod services;
+mod values;
 mod web;
 
 pub struct AppState {
@@ -35,15 +35,15 @@ async fn main() -> std::io::Result<()> {
 
     create_reserved_directories();
 
-    let server_bind = env::var("ARTERIA_BIND").expect("ARTERIA_BIND not set");
-    let server_port = env::var("ARTERIA_PORT").expect("ARTERIA_PORT not set");
+    let server_bind = values::bind_address();
+    let server_port = values::bind_port();
 
     let database_host = format!(
         "mysql://{}:{}@{}:{}/arteria",
-        env::var("ARTERIA_DATABASE_USER").expect("ARTERIA_DATABASE_USER not set"),
-        env::var("ARTERIA_DATABASE_PASS").expect("ARTERIA_DATABASE_PASS not set"),
-        env::var("ARTERIA_DATABASE_HOST").expect("ARTERIA_DATABASE_HOST not set"),
-        env::var("ARTERIA_DATABASE_PORT").expect("ARTERIA_DATABASE_PORT not set"),
+        values::database_user(),
+        values::database_pass(),
+        values::database_host(),
+        values::database_port()
     );
 
     // database connection
@@ -58,13 +58,13 @@ async fn main() -> std::io::Result<()> {
     // docker connection
     let docker =
         Docker::connect_with_local_defaults().expect("Failed to create a connection with Docker");
-    let docker_addr = SyncArbiter::start(num_cpus::get(), move || {
+    let docker_addr = SyncArbiter::start((num_cpus::get() * 2) as usize, move || {
         docker::DockerExecutor(docker.clone())
     });
 
     // id generator
     let harsh = harsh::HarshBuilder::new()
-        .salt(env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT not set"))
+        .salt(values::hashed_id_salt())
         .length(10)
         .init()
         .expect("Failed to create hash id builder");

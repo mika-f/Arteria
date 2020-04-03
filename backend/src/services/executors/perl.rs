@@ -15,6 +15,7 @@ use crate::docker::container::ExecuteContainer;
 use crate::docker::DockerExecutor;
 use crate::executors::{to_bytes, Event, ExecutorEvent};
 use crate::models::{Executor, InstanceResponse};
+use crate::values;
 
 pub async fn execute(
   tx: Sender<Bytes>,
@@ -189,13 +190,13 @@ async fn execute_installer(
           "/usr/local/PROJECT/caches".to_owned()
         ),
       ]),
-      cpus: Some(500000000), // 0.5 cpus
+      cpus: Some(values::installer_cpu_limit()),
       env: Some(vec![
         "PERL5LIB=./local/lib/perl5".to_owned(),
         "PERL_CARMEL_REPO=/usr/local/PROJECT/caches".to_owned(),
       ]),
       logger: Some(tx.clone()),
-      memory: Some(256000000),                 // 256MB
+      memory: Some(values::installer_memory_limit()),
       network_mode: Some("bridge".to_owned()), // accept network connection
       runtime: None,
       timeout: None,
@@ -232,12 +233,12 @@ async fn execute_executor(
         path.to_str().unwrap(),
         "/usr/local/PROJECT/workspace"
       )]),
-      cpus: Some(250000000), // 0.25 cpus
+      cpus: Some(values::executor_cpu_limit()),
       logger: Some(tx.clone()),
-      memory: Some(128000000),               // 128MB
+      memory: Some(values::executor_memory_limit()),
       network_mode: Some("none".to_owned()), // Network is disabled
-      runtime: None,                         // I want to use gVisor for container runtime
-      timeout: Some(10),                     // timeout 10 seconds
+      runtime: values::executor_runtime(),   // I want to use gVisor for container runtime
+      timeout: Some(values::executor_timeout()), // timeout 10 seconds
       ulimits: None,                         // I want to limit processes to: { soft: 16, hard: 32}
       working_dir: Some("/usr/local/PROJECT/workspace".to_owned()),
     })
