@@ -16,7 +16,7 @@ The goal of this project is to create a Perl version of RunKit.
 | ----------------------- | ------------- | --------------------------------- |
 | `ARTERIA_DATABASE_HOST` | `localhost`   | MySQL database connection address |
 | `ARTERIA_DATABASE_USER` | `root`        | MySQL database user               |
-| `ARTERIA_DATABASE_PASS` | ``            | MySQL database password           |
+| `ARTERIA_DATABASE_PASS` | `p@ssw0rd`    | MySQL database password           |
 | `ARTERIA_DATABASE_PORT` | `3306`        | MySQL database connection port    |
 | `ARTERIA_HASH_SALT`     | `Ex@mp1e`     | Hash ID salt value                |
 | `ARTERIA_SERVER_BIND`   | `127.0.0.1`   | Arteria server binding address    |
