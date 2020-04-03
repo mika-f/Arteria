@@ -11,6 +11,8 @@
     "build": "yarn build:app && yarn build:sw",
     "build:app": "parcel build --cache-dir .cache public/index.html",
     "build:sw": "parcel build --cache-dir .cache src/service-worker.ts"
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@monaco-editor/react": "^3.1.2",
@@ -26,13 +28,21 @@
     "use-http": "^0.3.8"
   },
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@storybook/addon-actions": "^5.3.18",
+    "@storybook/addon-links": "^5.3.18",
+    "@storybook/addons": "^5.3.18",
+    "@storybook/react": "^5.3.18",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.5",
     "@types/react-helmet": "^5.0.15",
     "@types/react-router-dom": "^5.1.3",
     "@types/styled-components": "^5.0.1",
+    "@types/webpack": "^4.41.10",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.0",
@@ -43,13 +53,17 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
     "parcel": "^1.12.4",
+    "file-loader": "^6.0.0",
+    "monaco-editor-webpack-plugin": "^1.9.0",
     "prettier": "^1.19.1",
+    "style-loader": "^1.1.3",
     "stylelint": "^13.2.1",
     "stylelint-config-prettier": "^8.0.1",
     "stylelint-config-recess-order": "^2.0.4",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
-    "typescript": "^3.8.3"
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
   }
 }
