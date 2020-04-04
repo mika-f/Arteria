@@ -28,6 +28,13 @@ pub fn hashed_id_salt() -> String {
   env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT is not set")
 }
 
+pub fn container_concurrency() -> usize {
+  env::var("ARTERIA_CONTAINER_CONCURRENCY")
+    .expect("ARTERIA_CONTAINER_CONCURRENCY is not set")
+    .parse()
+    .unwrap()
+}
+
 pub fn executor_cpu_limit() -> u64 {
   env::var("ARTERIA_CONTAINER_EXECUTOR_CPU_LIMIT")
     .unwrap_or("250000000".to_owned()) // 0.25 cpu

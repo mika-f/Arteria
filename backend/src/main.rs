@@ -58,7 +58,7 @@ async fn main() -> std::io::Result<()> {
     // docker connection
     let docker =
         Docker::connect_with_local_defaults().expect("Failed to create a connection with Docker");
-    let docker_addr = SyncArbiter::start((num_cpus::get() * 2) as usize, move || {
+    let docker_addr = SyncArbiter::start(values::container_concurrency(), move || {
         docker::DockerExecutor(docker.clone())
     });
 
