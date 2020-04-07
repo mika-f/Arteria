@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const RouterLink = styled(Link)`
-  color: #3273dc;
+  color: #ccc;
   text-decoration: none;
   cursor: pointer;
 
