@@ -21,6 +21,7 @@ const Footer: React.FC = () => {
   const items1 = [
     { href: "/about", text: "Arteria について" },
     { href: "/terms", text: "利用規約" },
+    { href: "/privacy", text: "プライバシーポリシー" },
     { href: "https://github.com/mika-f/Arteria", text: "ソースコード" }
   ];
 
