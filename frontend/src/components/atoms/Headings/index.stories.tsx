@@ -1,10 +1,12 @@
 import React from "react";
 
-import { Heading2, Heading3 } from ".";
+import { Heading1, Heading2, Heading3 } from ".";
 
 export default {
   title: "atoms/Headings"
 };
+
+export const H1 = () => <Heading1>Heading 1</Heading1>;
 
 export const H2 = () => <Heading2>Heading 2</Heading2>;
 
