@@ -53,6 +53,7 @@ html, body {
   min-height: 100vh;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", YuGothic, Verdana, Meiryo, "M+ 1p", sans-serif;
+  line-height: 1.5;
 }
 `;
 
