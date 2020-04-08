@@ -1,5 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require("path");
+
+const DotEnv = require("dotenv-webpack");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = {
@@ -28,5 +30,11 @@ module.exports = {
   resolve: {
     extensions: [".js", ".ts", ".jsx", ".tsx"]
   },
-  plugins: [new MonacoWebpackPlugin()]
+  plugins: [
+    new DotEnv({
+      path: path.join(__dirname, ".env"),
+      systemvars: true
+    }),
+    new MonacoWebpackPlugin()
+  ]
 };
