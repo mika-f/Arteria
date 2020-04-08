@@ -21,6 +21,7 @@
     "monaco-editor": "^0.20.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-ga": "^2.7.0",
     "react-helmet": "^5.2.1",
     "react-i18next": "^11.3.3",
     "react-router-dom": "^5.1.2",
