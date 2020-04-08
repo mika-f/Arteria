@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import withTracker from "./components/hoc/withTracker";
 import About from "./components/pages/About";
+import Privacy from "./components/pages/Privacy";
 import Root from "./components/pages/Root";
 import Terms from "./components/pages/Terms";
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Route path="/" component={withTracker(Root)} exact />
         <Route path="/about" component={withTracker(About)} exact />
+        <Route path="/privacy" component={withTracker(Privacy)} exact />
         <Route path="/terms" component={withTracker(Terms)} exact />
       </BrowserRouter>
     </>
