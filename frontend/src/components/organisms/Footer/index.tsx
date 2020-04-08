@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Container from "../../atoms/Container";
 import { Heading1 } from "../../atoms/Headings";
 import { Grid, Row } from "../../atoms/FlexboxGrid";
+import { Normal } from "../../atoms/Typography";
 import ListSection from "../ListSection";
 
 const FooterContainer = styled.footer`
@@ -15,6 +16,10 @@ const FooterContainer = styled.footer`
 const Horizon = styled.div`
   margin: 4px 0 16px 0;
   border-bottom: 1px solid #666;
+`;
+
+const RowContainer = styled.div`
+  margin: 0 0 20px;
 `;
 
 const Footer: React.FC = () => {
@@ -36,13 +41,15 @@ const Footer: React.FC = () => {
       <Container>
         <Heading1>Arteria</Heading1>
         <Grid rows={12}>
-          <Row sm={4} md={8}>
-            Arteria - Perl5 Playground
+          <Row sm={12} md={12} lg={6}>
+            <RowContainer>
+              <Normal> Arteria - Perl5 Playground</Normal>
+            </RowContainer>
           </Row>
-          <Row sm={4} md={2}>
+          <Row sm={12} md={6} lg={3}>
             <ListSection title="Arteria" items={items1} />
           </Row>
-          <Row sm={4} md={2}>
+          <Row sm={12} md={6} lg={3}>
             <ListSection title="運営情報" items={items2} />
           </Row>
         </Grid>

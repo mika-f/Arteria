@@ -16,18 +16,18 @@ export default {
 export const Default = () => (
   <ColoredContainer>
     <Grid rows={12}>
-      <Row sm={4} md={3}>
+      <Row sm={4} md={3} lg={3}>
         Hello 1
         <br />
         Hello 2
       </Row>
-      <Row sm={4} md={3}>
+      <Row sm={4} md={3} lg={3}>
         Hello 2
       </Row>
-      <Row sm={4} md={3}>
+      <Row sm={4} md={3} lg={3}>
         Hello 3
       </Row>
-      <Row sm={12} md={3}>
+      <Row sm={12} md={3} lg={3}>
         Hello 4
       </Row>
     </Grid>
