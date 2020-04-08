@@ -12,7 +12,9 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
+  display: flex;
   flex: 1 1 auto;
+  align-items: stretch;
 `;
 
 const Wrapper: React.FC = ({ children }) => {

@@ -22,7 +22,7 @@ const TitleH3 = styled(Heading3)`
 `;
 
 const InnerSection = styled.section`
-  margin: 0.25em 0 1em 0;
+  margin: 0.5em 0 2em 0;
 `;
 
 const Section: React.FC<Props> = ({ size, title, children }) => {
@@ -45,7 +45,7 @@ const Section: React.FC<Props> = ({ size, title, children }) => {
   return (
     <InnerSection>
       {getComponentForSize(size, title)}
-      <Normal>{children}</Normal>
+      {children}
     </InnerSection>
   );
 };
