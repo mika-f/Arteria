@@ -1072,10 +1072,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@mika-f/monaka@^0.1.0":
-  version "0.1.0"
-  resolved "https://npm.pkg.github.com/download/@mika-f/monaka/0.1.0/fbfdd49cf1ab937d72393f8df2458d74f231c2b35a62e9f79ca4ba3670e81b26#af6f4f6029640e01df6b64b257c19a93c355903c"
-  integrity sha512-4qAPwkNd3/q9gqcPaFdyvDwPmvbcXiGvDsTf7mMAItJgaDjaFiwYA8s33bJHWeCdcrEp+214tWIpfmlEgQA92Q==
+"@mika-f/monaka@^0.1.1":
+  version "0.1.1"
+  resolved "https://npm.pkg.github.com/download/@mika-f/monaka/0.1.1/329096d7d04902fdbf2b204691a172206da71e5ab64077960691a76d7c4967a8#a53d9617033a6b157a6d4baed3bc45b40a6c6ff4"
+  integrity sha512-JC1PZB+IBcqt91fMDlAhwRoc3LryhUU0HIXmt9Rk/65F/tvdOmtW7HieL3zJNtw/sr1o0TA3h2UAMvscepWGkw==
   dependencies:
     monaco-editor "^0.20.0"
     react "^16.13.1"
