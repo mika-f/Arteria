@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 import { Heading1, Heading2, Heading3 } from "../../atoms/Headings";
-import { Normal } from "../../atoms/Typography";
 
 type Props = {
   size: "small" | "medium" | "large";
