@@ -252,18 +252,3 @@ async fn execute_executor(
     Err(_) => Ok(Vec::new()),
   }
 }
-
-// if we fails to send message to server,
-fn safe_send<T: serde::Serialize>(
-  tx: Sender<Bytes>,
-  event: Event,
-  data: Option<T>,
-) -> Result<(), ()> {
-  match tx
-    .clone()
-    .try_send(to_bytes(ExecutorEvent::<T> { event, data }))
-  {
-    Ok(_) => Ok(()),
-    Err(_) => Ok(()),
-  }
-}
