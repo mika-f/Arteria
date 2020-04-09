@@ -1,4 +1,5 @@
 use std::iter::Iterator;
+use std::path::Path;
 
 use actix::*;
 use actix_web::Error;
@@ -33,28 +34,40 @@ pub async fn create_instance(
 
 fn validate_instance(object: InstanceRequest) -> bool {
   if object.executor.trim() == "" {
-    return false;
+    return false; // invalid executor
   }
 
-  if object.files.iter().any(|w| {
-    let path = &w.title;
+  if object.files.len() == 0 {
+    return false; // are you sure????
+  }
 
-    // does not support root path
-    if path.starts_with("/") {
-      return true;
-    }
-
-    // does not support relative (dot) path
-    if path.split("/").any(|v| v == "." || v == "..") {
-      return true;
-    }
-
-    return false;
-  }) {
-    return false;
+  if object.files.iter().any(|w| !is_valid_pathname(&w.title)) {
+    return false; // invalid pathname
   }
 
   true
+}
+
+fn is_valid_pathname(path: &str) -> bool {
+  // does not support relative (dot) path
+  if path
+    .split("/")
+    .map(|w| w.trim())
+    .any(|w| w == "." || w == ".." || w == "")
+  {
+    return false;
+  }
+
+  let path = Path::new(path);
+  if path.is_dir() {
+    return false;
+  }
+
+  if path.is_absolute() {
+    return false;
+  }
+
+  return true;
 }
 
 pub async fn fetch_instance(
