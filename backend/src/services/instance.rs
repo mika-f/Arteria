@@ -1,3 +1,5 @@
+use std::iter::Iterator;
+
 use actix::*;
 use actix_web::Error;
 
@@ -14,6 +16,10 @@ pub async fn create_instance(
   database: Addr<DbExecutor>,
   object: InstanceRequest,
 ) -> Result<(i64, InstanceResponse, Executor), Error> {
+  if !validate_instance(object.clone()) {
+    return Err(errors::ServerError::BadRequest.into());
+  }
+
   let instance_id = database
     .send(CreateNewInstance::new(object.clone()))
     .await??;
@@ -23,6 +29,32 @@ pub async fn create_instance(
     .await??;
 
   Ok((instance_id, instance, executor.unwrap()))
+}
+
+fn validate_instance(object: InstanceRequest) -> bool {
+  if object.executor.trim() == "" {
+    return false;
+  }
+
+  if object.files.iter().any(|w| {
+    let path = &w.title;
+
+    // does not support root path
+    if path.starts_with("/") {
+      return true;
+    }
+
+    // does not support relative (dot) path
+    if path.split("/").any(|v| v == "." || v == "..") {
+      return true;
+    }
+
+    return false;
+  }) {
+    return false;
+  }
+
+  true
 }
 
 pub async fn fetch_instance(

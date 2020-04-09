@@ -20,6 +20,8 @@ pub enum ServerError {
 
   InternalServerError,
 
+  BadRequest,
+
   ResourceNotFound,
 }
 
@@ -31,6 +33,7 @@ impl std::fmt::Display for ServerError {
       ServerError::DockerConnectionError => write!(f, "{}", "Docker Connection Error"),
       ServerError::DockerExecutionError => write!(f, "{}", "Docker Execution Error"),
       ServerError::InternalServerError => write!(f, "{}", "Internal Server Error"),
+      ServerError::BadRequest => write!(f, "{}", "Bad Request"),
       ServerError::ResourceNotFound => write!(f, "{}", "Resource Not Found"),
     }
   }
@@ -62,6 +65,10 @@ impl ResponseError for ServerError {
       ServerError::InternalServerError => HttpResponse::InternalServerError().json(ErrorResponse {
         code: 500,
         message: "Internal Server Error",
+      }),
+      ServerError::BadRequest => HttpResponse::BadRequest().json(ErrorResponse {
+        code: 400,
+        message: "Bad Request",
       }),
       ServerError::ResourceNotFound => HttpResponse::NotFound().json(ErrorResponse {
         code: 404,
