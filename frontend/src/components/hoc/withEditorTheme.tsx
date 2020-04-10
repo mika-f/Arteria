@@ -2,7 +2,7 @@ import React from "react";
 import { LanguageProvider, IconProvider, FileIcon, FileType, ThemeProvider } from "@mika-f/monaka";
 import { Theme } from "@mika-f/monaka/dist/components/ThemeProvider";
 
-const icons = [{}] as FileIcon[];
+const icons = [] as FileIcon[];
 
 const languages = [
   {
