@@ -2,7 +2,35 @@ import React from "react";
 import { LanguageProvider, IconProvider, FileIcon, FileType, ThemeProvider } from "@mika-f/monaka";
 import { Theme } from "@mika-f/monaka/dist/components/ThemeProvider";
 
-const icons = [] as FileIcon[];
+import { PerlFileIcon, LibraryDirectoryClosedIcon, LibraryDirectoryOpenedIcon } from "../atoms/Icons";
+
+const icons = [
+  {
+    directory: false,
+    extension: /\.t$/,
+    component: PerlFileIcon
+  },
+  {
+    directory: false,
+    extension: /\.pl$/,
+    component: PerlFileIcon
+  },
+  {
+    directory: false,
+    extension: /\.pm$/,
+    component: PerlFileIcon
+  },
+  {
+    directory: true,
+    extension: /^lib_opened$/,
+    component: LibraryDirectoryOpenedIcon
+  },
+  {
+    directory: true,
+    extension: /^lib_closed$/,
+    component: LibraryDirectoryClosedIcon
+  }
+] as FileIcon[];
 
 const languages = [
   {
