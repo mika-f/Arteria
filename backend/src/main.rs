@@ -4,7 +4,8 @@ extern crate diesel;
 use std::fs;
 
 use actix::prelude::*;
-use actix_web::{middleware, App, HttpServer};
+use actix_cors::{Cors, CorsFactory};
+use actix_web::{http, middleware, App, HttpServer};
 use bollard::Docker;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
@@ -82,6 +83,7 @@ async fn main() -> std::io::Result<()> {
             .data(harsh.clone())
             // middleware
             .wrap(middleware::Logger::default())
+            .wrap(get_cors_configurations())
             // routings
             .configure(web::executors::routings)
             .configure(web::instances::routings)
@@ -104,5 +106,17 @@ fn create_reserved_directories() {
     let temp_dir = dirs::temp_dir();
     if !temp_dir.exists() {
         fs::create_dir(temp_dir.to_str().unwrap()).unwrap();
+    }
+}
+
+fn get_cors_configurations() -> CorsFactory {
+    match values::cors_allowed_host() {
+        Some(value) => Cors::new()
+            .allowed_origin(&value)
+            .allowed_methods(vec!["GET", "POST"])
+            .allowed_headers(vec![http::header::ACCEPT, http::header::CONTENT_TYPE])
+            .max_age(3600)
+            .finish(),
+        None => Cors::new().finish(),
     }
 }

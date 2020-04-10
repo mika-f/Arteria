@@ -28,6 +28,13 @@ pub fn hashed_id_salt() -> String {
   env::var("ARTERIA_HASH_SALT").expect("ARTERIA_HASH_SALT is not set")
 }
 
+pub fn cors_allowed_host() -> Option<String> {
+  match env::var("ARTERIA_CORS_ALLOWED_HOST") {
+    Ok(value) => Some(value),
+    Err(_) => None,
+  }
+}
+
 pub fn container_concurrency() -> usize {
   env::var("ARTERIA_CONTAINER_CONCURRENCY")
     .expect("ARTERIA_CONTAINER_CONCURRENCY is not set")
