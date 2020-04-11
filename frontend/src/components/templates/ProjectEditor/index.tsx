@@ -13,6 +13,7 @@ type Props = {
   executors: Executor[];
 
   // template events
+  onTitleChanged?: (title: string) => void;
   onExecutorChanged?: (executor: Executor) => void;
 
   // editor events
@@ -27,13 +28,13 @@ const Container = styled.div`
   color: #ccc;
 `;
 
-const ProjectEditorTemplate: React.FC<Props> = ({ instance, items, executors, onItemCreated, onItemsChanged, onItemDeleted }) => {
+const ProjectEditorTemplate: React.FC<Props> = ({ instance, items, executors, onTitleChanged, onExecutorChanged, onItemCreated, onItemsChanged, onItemDeleted }) => {
   return (
     <Wrapper>
       <Container>
         <Monaka title="Arteria Project" items={items} onItemCreated={onItemCreated} onItemsChanged={onItemsChanged} onItemDeleted={onItemDeleted}>
           <ProjectSection title="Project">
-            <Project title={instance.title} executor={instance.executor} executors={executors} />
+            <Project title={instance.title} executor={instance.executor} executors={executors} onTitleChanged={onTitleChanged} onExecutorChanged={onExecutorChanged} />
           </ProjectSection>
           <ProjectSection title="Dependencies"></ProjectSection>
         </Monaka>
