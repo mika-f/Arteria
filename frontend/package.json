@@ -29,7 +29,8 @@
     "react-transition-group": "^4.3.0",
     "sse.js": "^0.4.4",
     "styled-components": "^5.0.1",
-    "use-http": "^0.3.8"
+    "use-http": "^0.3.8",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -44,6 +45,7 @@
     "@types/react-select": "^3.0.11",
     "@types/react-transition-group": "^4.2.4",
     "@types/styled-components": "^5.0.1",
+    "@types/uuid": "^7.0.2",
     "@types/webpack": "^4.41.10",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
