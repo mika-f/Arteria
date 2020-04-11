@@ -7,6 +7,7 @@ import ProjectStarterTemplate from "../../templates/ProjectStarter";
 import { ProjectInstance } from "../../../models/instance";
 import { Executor } from "../../../models/executor";
 import { templates, PerlTemplate } from "../../../templates";
+import { Dependency } from "../../../models/dependency";
 
 const Root: React.FC = () => {
   const [items, setItems] = useState<Item[] | null>(null);
@@ -34,16 +35,22 @@ const Root: React.FC = () => {
     setItems(template.project);
   };
 
+  const onDependencyChanged = (dependencies: Dependency[]) => {
+    if (instance) setInstance({ ...instance, dependencies });
+  };
+
   const onExecutorSelected = (executor: Executor) => {
     if (instance) setInstance({ ...instance, executor });
   };
+
+  console.log(instance);
 
   return (
     <>
       {items === null || instance === null ? (
         <ProjectStarterTemplate templates={templates} onTemplateSelected={onTemplateSelected} />
       ) : (
-        <ProjectEditorTemplate instance={instance} items={items} executors={executors} onExecutorChanged={onExecutorSelected} />
+        <ProjectEditorTemplate instance={instance} items={items} executors={executors} onDependencyChanged={onDependencyChanged} onExecutorChanged={onExecutorSelected} />
       )}
     </>
   );

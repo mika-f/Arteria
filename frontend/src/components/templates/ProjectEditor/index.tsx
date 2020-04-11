@@ -2,10 +2,12 @@ import React from "react";
 import styled from "styled-components";
 import { Monaka, Item, ProjectSection } from "@mika-f/monaka";
 
+import Dependencies from "../../organisms/Dependencies";
 import Project from "../../organisms/Project";
 import Wrapper from "../../organisms/Wrapper";
 import { Executor } from "../../../models/executor";
 import { ProjectInstance } from "../../../models/instance";
+import { Dependency } from "../../../models/dependency";
 
 type Props = {
   instance: ProjectInstance;
@@ -14,6 +16,7 @@ type Props = {
 
   // template events
   onTitleChanged?: (title: string) => void;
+  onDependencyChanged?: (dependencies: Dependency[]) => void;
   onExecutorChanged?: (executor: Executor) => void;
 
   // editor events
@@ -28,7 +31,17 @@ const Container = styled.div`
   color: #ccc;
 `;
 
-const ProjectEditorTemplate: React.FC<Props> = ({ instance, items, executors, onTitleChanged, onExecutorChanged, onItemCreated, onItemsChanged, onItemDeleted }) => {
+const ProjectEditorTemplate: React.FC<Props> = ({
+  instance,
+  items,
+  executors,
+  onTitleChanged,
+  onDependencyChanged,
+  onExecutorChanged,
+  onItemCreated,
+  onItemsChanged,
+  onItemDeleted
+}) => {
   return (
     <Wrapper>
       <Container>
@@ -36,7 +49,9 @@ const ProjectEditorTemplate: React.FC<Props> = ({ instance, items, executors, on
           <ProjectSection title="Project">
             <Project title={instance.title} executor={instance.executor} executors={executors} onTitleChanged={onTitleChanged} onExecutorChanged={onExecutorChanged} />
           </ProjectSection>
-          <ProjectSection title="Dependencies"></ProjectSection>
+          <ProjectSection title="Dependencies">
+            <Dependencies dependencies={instance.dependencies} editable onDependenciesChanged={onDependencyChanged} />
+          </ProjectSection>
         </Monaka>
       </Container>
     </Wrapper>

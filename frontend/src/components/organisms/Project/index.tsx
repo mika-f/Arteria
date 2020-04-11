@@ -92,7 +92,7 @@ const Project: React.FC<Props> = ({ title, executor, executors, onTitleChanged, 
     <Container>
       <Label>Project Title : </Label>
       <Value>
-        <InputStyled value={title} onSubmit={onSubmitTitle} />
+        <InputStyled value={title} mode="PropertyChanged" onSubmit={onSubmitTitle} />
       </Value>
       <Label>Container : </Label>
       <Value>
