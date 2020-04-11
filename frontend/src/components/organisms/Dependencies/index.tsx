@@ -23,21 +23,21 @@ const InputStyled = styled(Input)`
 
 const Dependencies: React.FC<Props> = ({ dependencies, editable, onDependenciesChanged }) => {
   const onDependencyDeleted = (nameWithVersion: string) => {
-    const deps = dependencies.filter(w => w.nameWithVersion !== nameWithVersion);
+    const deps = dependencies.filter(w => w.name_with_version !== nameWithVersion);
     if (onDependenciesChanged) onDependenciesChanged(deps);
   };
 
   const onDependencyAdded = (nameWithVersion: any) => {
-    if (typeof nameWithVersion === "string") if (onDependenciesChanged) onDependenciesChanged([...dependencies, { nameWithVersion }]);
+    if (typeof nameWithVersion === "string") if (onDependenciesChanged) onDependenciesChanged([...dependencies, { name_with_version: nameWithVersion }]);
   };
 
   return (
     <Container>
       {dependencies.length === 0 && !editable ? <Normal>No Dependencies</Normal> : null}
       {dependencies.map(w => {
-        const [name, version] = w.nameWithVersion.split("@");
+        const [name, version] = w.name_with_version.split("@");
 
-        return <DependencyItem key={w.nameWithVersion} name={name} version={version} editable={editable} onClickDelete={onDependencyDeleted} />;
+        return <DependencyItem key={w.name_with_version} name={name} version={version} editable={editable} onClickDelete={onDependencyDeleted} />;
       })}
       {editable ? <InputStyled value="" mode="Submit" placeholder="Data::Validator@1.07" onSubmit={onDependencyAdded} /> : null}
     </Container>

@@ -5,7 +5,7 @@ import { Dependency } from "../../models/dependency";
 
 export const guid = "5eaa7024-3ff8-43c9-8ac0-69353249be31";
 export const title = "Data::Validator";
-export const dependencies: Dependency[] = [{ nameWithVersion: "Data::Validator" }];
+export const dependencies: Dependency[] = [{ name_with_version: "Data::Validator" }];
 export const command = "perl main.pl";
 export const project: Item[] = [
   {

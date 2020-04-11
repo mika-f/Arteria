@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 export type Dependency = {
-  nameWithVersion: string;
+  name_with_version: string;
 };
