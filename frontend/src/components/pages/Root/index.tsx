@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SSE } from "sse.js";
 import useFetch from "use-http";
-import { Item, FileItem } from "@mika-f/monaka";
+import { Item, FileItem, getChildren } from "@mika-f/monaka";
 
 import ProjectEditorTemplate from "../../templates/ProjectEditor";
 import ProjectStarterTemplate from "../../templates/ProjectStarter";
@@ -41,7 +41,7 @@ const Root: React.FC = () => {
   const redirect = () => {
     if (!instance || !instanceId.current) return;
 
-    history.pushState(null, instance?.title, `/instances/${instanceId.current}`);
+    window.history.pushState(null, instance?.title, `/instances/${instanceId.current}`);
   };
 
   const onTemplateSelected = (template: PerlTemplate) => {
@@ -52,6 +52,10 @@ const Root: React.FC = () => {
       files: []
     } as ProjectInstance);
     setItems(template.project);
+  };
+
+  const onTitleChanged = (title: string) => {
+    if (instance) setInstance({ ...instance, title });
   };
 
   const onDependencyChanged = (dependencies: Dependency[]) => {
@@ -138,6 +142,35 @@ const Root: React.FC = () => {
     (eventsource as any).stream();
   };
 
+  const onItemsChanged = (changesets: Item[]) => {
+    const newItems = (items || []).slice();
+
+    for (let i = 0; i < changesets.length; i += 1) {
+      const item = changesets[i];
+      const index = newItems.findIndex(w => w.id === item.id);
+      newItems[index].title = item.title;
+      newItems[index].parentId = item.parentId;
+
+      if (item.type === "file") (newItems[index] as FileItem).content = item.content;
+    }
+
+    setItems(newItems);
+  };
+
+  const onItemCreated = (item: Item) => {
+    setItems([...(items || []), item]);
+  };
+
+  const onItemDeleted = (item: Item) => {
+    let newItems: Item[] = [];
+    if (item.type === "file") {
+      newItems = (items || []).slice().filter(w => w.id !== item.id);
+    } else if (item.type === "directory") {
+      newItems = (items || []).slice().filter(w => !getChildren(items || [], item).find(v => v.id === w.id));
+    }
+    setItems(newItems);
+  };
+
   return (
     <>
       {items === null || instance === null ? (
@@ -149,9 +182,13 @@ const Root: React.FC = () => {
           executors={executors}
           lines={lines}
           readonly={isReadonly}
+          onTitleChanged={onTitleChanged}
           onDependencyChanged={onDependencyChanged}
           onExecutorChanged={onExecutorSelected}
           onBuildAndPublishClicked={onBuildAndPublishClicked}
+          onItemCreated={onItemCreated}
+          onItemsChanged={onItemsChanged}
+          onItemDeleted={onItemDeleted}
         />
       )}
     </>
