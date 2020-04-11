@@ -193,8 +193,6 @@ impl Handler<ExecuteContainer> for DockerExecutor {
       Ok(logs)
     })?;
 
-    dbg!(&vec);
-
     Ok(vec)
   }
 }
