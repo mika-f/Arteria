@@ -120,8 +120,8 @@ impl PerlExecutor {
       // I want to close network connection by server, but I don't know how to do it...
       tx.clone()
         .try_send(to_bytes(ExecutorEvent::<String> {
-          event: Event::Command,
-          data: Some("system: close".to_owned()),
+          event: Event::System,
+          data: Some("close".to_owned()),
         }))
         .unwrap();
     })
