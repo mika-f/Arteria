@@ -35,6 +35,7 @@ async fn get_instance(
 async fn create_instance(
   _: HttpRequest,
   state: web::Data<AppState>,
+  harsh: web::Data<Harsh>,
   executor: web::Data<Mutex<PerlExecutor>>,
   data: web::Json<InstanceRequest>,
 ) -> Result<impl Responder, Error> {
@@ -43,10 +44,15 @@ async fn create_instance(
   let (instance_id, instance, container) =
     services::instance::create_instance(db, data.into_inner()).await?;
 
+  let hashed_id = match harsh.encode(&[instance_id as u64]) {
+    Some(id) => id,
+    None => return Err(errors::ServerError::InternalServerError.into()),
+  };
+
   let rx = executor
     .lock()
     .unwrap()
-    .execute(instance_id, instance, container);
+    .execute(instance_id, hashed_id, instance, container);
 
   Ok(
     HttpResponse::Ok()

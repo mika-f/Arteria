@@ -13,7 +13,6 @@ use uuid::Uuid;
 use crate::dirs;
 use crate::docker::container::ExecuteContainer;
 use crate::docker::DockerExecutor;
-use crate::executors::{to_bytes, Event, ExecutorEvent};
 use crate::models::{Executor, InstanceResponse};
 use crate::values;
 

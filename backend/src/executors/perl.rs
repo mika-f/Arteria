@@ -12,7 +12,7 @@ use super::{to_bytes, Client, Event, ExecutorEvent, HeartbeatEvent};
 use crate::database::instance::UpdateInstance;
 use crate::database::DbExecutor;
 use crate::docker::DockerExecutor;
-use crate::models::{Executor, InstanceChangeset, InstanceResponse, InstanceStatus};
+use crate::models::{Command, Executor, InstanceChangeset, InstanceResponse, InstanceStatus};
 use crate::services;
 
 pub struct PerlExecutor {
@@ -61,12 +61,24 @@ impl PerlExecutor {
     self.clients = lived_clients;
   }
 
-  pub fn execute(&mut self, id: i64, instance: InstanceResponse, executor: Executor) -> Client {
+  pub fn execute(
+    &mut self,
+    id: i64,
+    hashed_id: String,
+    instance: InstanceResponse,
+    executor: Executor,
+  ) -> Client {
     let (tx, rx) = channel(100);
 
     self.clients.push(tx.clone());
 
-    self.spawn_task(tx.clone(), id, instance.clone(), executor.clone());
+    self.spawn_task(
+      tx.clone(),
+      id,
+      hashed_id,
+      instance.clone(),
+      executor.clone(),
+    );
 
     Client(rx)
   }
@@ -75,6 +87,7 @@ impl PerlExecutor {
     &mut self,
     tx: Sender<Bytes>,
     instance_id: i64,
+    hashed_id: String,
     instance: InstanceResponse,
     executor: Executor,
   ) {
@@ -117,11 +130,24 @@ impl PerlExecutor {
         }
       };
 
+      tx.clone()
+        .try_send(to_bytes(ExecutorEvent::<Command> {
+          event: Event::Command,
+          data: Some(Command {
+            command: "redirect".to_owned(),
+            value: Some(hashed_id.to_owned()),
+          }),
+        }))
+        .unwrap();
+
       // I want to close network connection by server, but I don't know how to do it...
       tx.clone()
-        .try_send(to_bytes(ExecutorEvent::<String> {
-          event: Event::System,
-          data: Some("close".to_owned()),
+        .try_send(to_bytes(ExecutorEvent::<Command> {
+          event: Event::Command,
+          data: Some(Command {
+            command: "close".to_owned(),
+            value: None,
+          }),
         }))
         .unwrap();
     })
