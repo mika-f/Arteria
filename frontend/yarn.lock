@@ -1072,10 +1072,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@mika-f/monaka@^0.3.0":
-  version "0.3.0"
-  resolved "https://npm.pkg.github.com/download/@mika-f/monaka/0.3.0/49ccaa4bd0f898ba847c0aba8309c993b3d3ed19f1aa6ade0db43ac8ee0cbfd6#c2885b58f26d36bc39a3d870b3bf818694ce97bd"
-  integrity sha512-Z7/Zney30cKnOj7PoCxBjvRHS09Rj8IFz55LyFJvBnMynlGM3CqipbqvrsbN6FxwrYEgclceQyP6Uvw894GJ/g==
+"@mika-f/monaka@^0.3.1":
+  version "0.3.1"
+  resolved "https://npm.pkg.github.com/download/@mika-f/monaka/0.3.1/c9dc10fa3f1b5cccd0ed29c86c72395716dc4dc54ae0e61db7a60219d7a13ba1#ce0ff792da005cbdab71ee518b9a44f79edca7b2"
+  integrity sha512-bObywTE1+jx9cVmFqKaIdUx5ixm0gpOzyKmep4Exa1EWUHWsYWnUfZxJ4rW1yzzE4ZvnxYCSj/BjzYs9svP7Gw==
   dependencies:
     is-invalid-path "^1.0.2"
     monaco-editor "^0.20.0"

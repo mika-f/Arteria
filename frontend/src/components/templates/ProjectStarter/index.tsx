@@ -58,7 +58,7 @@ const ProjectStarter: React.FC<Props> = ({ templates, onTemplateSelected }) => {
           </Section>
           <Section size="medium" title="プロジェクトプレビュー (編集しても意味はありません)">
             <EditorContainer>
-              <Monaka title="Project Preview" items={currentTemplate.project || []} />
+              <Monaka title="Project Preview" items={currentTemplate.project || []} readonly />
             </EditorContainer>
           </Section>
         </Container>
