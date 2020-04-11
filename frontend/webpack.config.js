@@ -8,7 +8,8 @@ module.exports = {
   entry: path.join(__dirname, "src", "main.tsx"),
   output: {
     path: path.join(__dirname, "dist"),
-    filename: "main.js"
+    filename: "main.js",
+    publicPath: "/"
   },
   module: {
     rules: [
