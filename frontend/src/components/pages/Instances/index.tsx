@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import useFetch from "use-http";
+import useFetch, { CachePolicies } from "use-http";
 import { v4 as uuid } from "uuid";
 import { DirectoryItem, FileItem, Item } from "@mika-f/monaka";
 
@@ -15,7 +15,7 @@ const Instances: React.FC = () => {
   const [instance, setInstance] = useState<ProjectInstance | null>(null);
   const [lines, setLines] = useState<string[]>([]);
 
-  const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string);
+  const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string, { cachePolicy: CachePolicies.NO_CACHE });
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define

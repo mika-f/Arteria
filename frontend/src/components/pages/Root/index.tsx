@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { SSE } from "sse.js";
-import useFetch from "use-http";
+import useFetch, { CachePolicies } from "use-http";
 import { Item, FileItem, getChildren } from "@mika-f/monaka";
 
+import Loading from "../../templates/Loading";
 import ProjectEditorTemplate from "../../templates/ProjectEditor";
 import ProjectStarterTemplate from "../../templates/ProjectStarter";
 import { ProjectInstance, Instance } from "../../../models/instance";
@@ -23,7 +24,7 @@ const Root: React.FC = () => {
   const instanceId = useRef<string | null>(null);
   const history = useHistory();
 
-  const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string);
+  const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string, { cachePolicy: CachePolicies.NO_CACHE });
 
   useEffect(() => {
     // eslint-disable-next-line no-use-before-define
@@ -175,7 +176,10 @@ const Root: React.FC = () => {
 
   return (
     <>
-      {items === null || instance === null ? (
+      {/* eslint-disable-next-line no-nested-ternary */}
+      {executors.length === 0 ? (
+        <Loading />
+      ) : items === null || instance === null ? (
         <ProjectStarterTemplate templates={templates} onTemplateSelected={onTemplateSelected} />
       ) : (
         <ProjectEditorTemplate
