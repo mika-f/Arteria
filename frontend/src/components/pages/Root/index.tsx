@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { SSE } from "sse.js";
 import useFetch from "use-http";
 import { Item, FileItem, getChildren } from "@mika-f/monaka";
@@ -20,6 +21,7 @@ const Root: React.FC = () => {
   const [lines, setLines] = useState<string[]>([]);
   const linesBuffer = useRef<string[]>([]);
   const instanceId = useRef<string | null>(null);
+  const history = useHistory();
 
   const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string);
 
@@ -41,7 +43,7 @@ const Root: React.FC = () => {
   const redirect = () => {
     if (!instance || !instanceId.current) return;
 
-    window.history.pushState(null, instance?.title, `/instances/${instanceId.current}`);
+    history.push(`/instances/${instanceId.current}`);
   };
 
   const onTemplateSelected = (template: PerlTemplate) => {
