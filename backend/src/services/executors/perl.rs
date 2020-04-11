@@ -137,6 +137,16 @@ fn create_project_file(
     let mut to = PathBuf::from(path);
     to.push(file.title.to_owned());
 
+    let dir = to.parent();
+    match dir {
+      Some(dir) => {
+        if !dir.exists() {
+          fs::create_dir_all(dir)?;
+        }
+      }
+      None => {}
+    };
+
     let mut source = BufWriter::new(fs::File::create(to)?);
     source.write(&format!("{}\n", file.content).as_bytes())?;
 
