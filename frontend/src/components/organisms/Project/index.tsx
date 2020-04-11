@@ -3,6 +3,7 @@ import Select from "react-select";
 import styled from "styled-components";
 import { Input } from "@mika-f/monaka";
 
+import { PrimaryButton } from "../../atoms/Button";
 import { Small } from "../../atoms/Typography";
 import { Executor } from "../../../models/executor";
 
@@ -10,14 +11,16 @@ type Props = {
   title: string;
   executor: Executor;
   executors: Executor[];
+  readonly: boolean;
 
   onTitleChanged?: (title: string) => void;
   onExecutorChanged?: (executor: Executor) => void;
+  onClickBuild?: () => void;
 };
 
 const Container = styled.div`
   display: grid;
-  grid-template-rows: repeat(2, 32px);
+  grid-template-rows: repeat(3, 32px);
   grid-template-columns: 100px 1fr;
   padding: 8px 0;
 `;
@@ -38,12 +41,23 @@ const Value = styled.div`
   align-items: center;
 `;
 
+const LabelAndValue = styled.div`
+  grid-column: 1/3;
+`;
+
+const Button = styled(PrimaryButton)`
+  width: 100%;
+  height: 30px;
+  padding: 4px;
+  font-size: 14px;
+`;
+
 const SelectWrapper = styled.div`
   width: 100%;
   color: #333;
 `;
 
-const Project: React.FC<Props> = ({ title, executor, executors, onTitleChanged, onExecutorChanged }) => {
+const Project: React.FC<Props> = ({ title, executor, executors, readonly, onTitleChanged, onExecutorChanged, onClickBuild }) => {
   const onSubmitTitle = (event: any) => {
     if (typeof event === "string") {
       if (onTitleChanged) onTitleChanged(event || "untitled");
@@ -92,7 +106,7 @@ const Project: React.FC<Props> = ({ title, executor, executors, onTitleChanged, 
     <Container>
       <Label>Project Title : </Label>
       <Value>
-        <InputStyled value={title} mode="PropertyChanged" onSubmit={onSubmitTitle} />
+        <InputStyled value={title} mode="PropertyChanged" disabled={readonly} onSubmit={onSubmitTitle} />
       </Value>
       <Label>Container : </Label>
       <Value>
@@ -102,10 +116,16 @@ const Project: React.FC<Props> = ({ title, executor, executors, onTitleChanged, 
             options={executors.map(w => ({ label: w.name, value: w.tag }))}
             menuPosition="fixed"
             styles={styles}
+            isDisabled={readonly}
             onChange={onExecutorSelected}
           />
         </SelectWrapper>
       </Value>
+      <LabelAndValue>
+        <Button disabled={readonly} onClick={onClickBuild}>
+          Build &amp; Publish
+        </Button>
+      </LabelAndValue>
     </Container>
   );
 };

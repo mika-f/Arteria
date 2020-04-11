@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Monaka, Item, ProjectSection } from "@mika-f/monaka";
 
+import Console from "../../atoms/Console";
 import Dependencies from "../../organisms/Dependencies";
 import Project from "../../organisms/Project";
 import Wrapper from "../../organisms/Wrapper";
@@ -13,11 +14,14 @@ type Props = {
   instance: ProjectInstance;
   items: Item[];
   executors: Executor[];
+  lines: string[];
+  readonly: boolean;
 
   // template events
   onTitleChanged?: (title: string) => void;
   onDependencyChanged?: (dependencies: Dependency[]) => void;
   onExecutorChanged?: (executor: Executor) => void;
+  onBuildAndPublishClicked?: () => void;
 
   // editor events
   onItemCreated?: (item: Item) => void;
@@ -27,17 +31,25 @@ type Props = {
 
 const Container = styled.div`
   width: 100%;
-  min-height: 500px;
   color: #ccc;
+  background: #252526;
+`;
+
+const MonakaContainer = styled.div`
+  height: 500px;
+  min-height: 500px;
 `;
 
 const ProjectEditorTemplate: React.FC<Props> = ({
   instance,
   items,
   executors,
+  lines,
+  readonly,
   onTitleChanged,
   onDependencyChanged,
   onExecutorChanged,
+  onBuildAndPublishClicked,
   onItemCreated,
   onItemsChanged,
   onItemDeleted
@@ -45,14 +57,25 @@ const ProjectEditorTemplate: React.FC<Props> = ({
   return (
     <Wrapper>
       <Container>
-        <Monaka title="Arteria Project" items={items} onItemCreated={onItemCreated} onItemsChanged={onItemsChanged} onItemDeleted={onItemDeleted}>
-          <ProjectSection title="Project">
-            <Project title={instance.title} executor={instance.executor} executors={executors} onTitleChanged={onTitleChanged} onExecutorChanged={onExecutorChanged} />
-          </ProjectSection>
-          <ProjectSection title="Dependencies">
-            <Dependencies dependencies={instance.dependencies} editable onDependenciesChanged={onDependencyChanged} />
-          </ProjectSection>
-        </Monaka>
+        <MonakaContainer>
+          <Monaka title="Arteria Project" items={items} readonly={readonly} onItemCreated={onItemCreated} onItemsChanged={onItemsChanged} onItemDeleted={onItemDeleted}>
+            <ProjectSection title="Project">
+              <Project
+                title={instance.title}
+                executor={instance.executor}
+                executors={executors}
+                readonly={readonly}
+                onTitleChanged={onTitleChanged}
+                onExecutorChanged={onExecutorChanged}
+                onClickBuild={onBuildAndPublishClicked}
+              />
+            </ProjectSection>
+            <ProjectSection title="Dependencies">
+              <Dependencies dependencies={instance.dependencies} editable={!readonly} onDependenciesChanged={onDependencyChanged} />
+            </ProjectSection>
+          </Monaka>
+        </MonakaContainer>
+        {lines.length > 0 ? <Console lines={lines} /> : null}
       </Container>
     </Wrapper>
   );
