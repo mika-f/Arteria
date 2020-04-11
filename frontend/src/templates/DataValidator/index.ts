@@ -24,7 +24,7 @@ package Validator;
 use strict;
 use warnings;
 use utf8;
-use features qw/say/;
+use feature qw/say state/;
 
 use Data::Validator;
 
