@@ -19,6 +19,7 @@ const Root: React.FC = () => {
   // Hmm...
   const [lines, setLines] = useState<string[]>([]);
   const linesBuffer = useRef<string[]>([]);
+  const instanceId = useRef<string | null>(null);
 
   const [request, response] = useFetch(process.env.ARTERIA_API_SERVER as string);
 
@@ -35,6 +36,12 @@ const Root: React.FC = () => {
   const insertNewLine = (line: string) => {
     linesBuffer.current = [...linesBuffer.current, line];
     setLines(linesBuffer.current);
+  };
+
+  const redirect = () => {
+    if (!instance || !instanceId.current) return;
+
+    history.pushState(null, instance?.title, `/instances/${instanceId.current}`);
   };
 
   const onTemplateSelected = (template: PerlTemplate) => {
@@ -104,8 +111,23 @@ const Root: React.FC = () => {
         case "Heartbeat":
           break;
 
-        case "System":
-          if (data === "close") eventsource.close();
+        case "Command":
+          // eslint-disable-next-line no-case-declarations
+          const { command, value } = data;
+
+          switch (command) {
+            case "close":
+              eventsource.close();
+              redirect();
+              break;
+
+            case "redirect":
+              instanceId.current = value;
+              break;
+
+            default:
+              break;
+          }
           break;
 
         default:
