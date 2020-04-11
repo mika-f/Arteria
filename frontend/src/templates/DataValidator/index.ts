@@ -32,8 +32,8 @@ sub validate {
   state $v; $v //= Data::Validator->new(
     str => 'Str',
   )->with(qw/Method/);
-  my $args = $v->validate(@_);
-  my $str = $args->{str};
+  my ($self, $args) = $v->validate(@_);
+  my ($str,)        = $args->{str};
 
   say "Hello, $str!";
 }
