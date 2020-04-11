@@ -56,7 +56,7 @@ const ProjectStarter: React.FC<Props> = ({ templates, onTemplateSelected }) => {
             </SelectWrapper>
             <PrimaryButton onClick={onSubmitTemplate}>作成する！</PrimaryButton>
           </Section>
-          <Section size="medium" title="プロジェクトプレビュー (編集しても意味はありません)">
+          <Section size="medium" title="プロジェクトプレビュー">
             <EditorContainer>
               <Monaka title="Project Preview" items={currentTemplate.project || []} readonly />
             </EditorContainer>
