@@ -37,6 +37,9 @@ module.exports = {
       path: path.join(__dirname, ".env"),
       systemvars: true
     }),
-    new MonacoWebpackPlugin()
+    new MonacoWebpackPlugin({
+      languages: ["css", "html", "javascript", "json", "perl", "typescript"],
+      features: ["!codelens", "!dnd", "!format", "!gotoError", "!gotoSymbol", "!parameterHints", "!snippets", "!toggleHighContrast"]
+    })
   ]
 };
