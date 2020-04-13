@@ -3,6 +3,7 @@ const path = require("path");
 
 const DotEnv = require("dotenv-webpack");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 module.exports = {
   entry: path.join(__dirname, "src", "main.tsx"),
@@ -40,7 +41,21 @@ module.exports = {
     }),
     new MonacoWebpackPlugin({
       languages: ["css", "html", "javascript", "json", "perl", "typescript"],
-      features: ["!codelens", "!dnd", "!format", "!gotoError", "!gotoSymbol", "!parameterHints", "!snippets", "!toggleHighContrast"]
-    })
+      features: [
+        "!accessibilityHelp",
+        "!codeAction",
+        "!codelens",
+        "!colorDetector",
+        "!dnd",
+        "!format",
+        "!gotoError",
+        "!gotoSymbol",
+        "!parameterHints",
+        "!referenceSearch",
+        "!snippets",
+        "!toggleHighContrast"
+      ]
+    }),
+    new BundleAnalyzerPlugin()
   ]
 };
