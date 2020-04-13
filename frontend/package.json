@@ -7,8 +7,8 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.js --content-base public/ --watch-content-base --hot --history-api-fallback --open",
-    "build": "webpack --config webpack.config.js --mode production",
+    "start": "webpack-dev-server --config webpack.config.dev.js --content-base public/ --watch-content-base --hot --history-api-fallback --open",
+    "build": "webpack --config webpack.config.prod.js --mode production",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
