@@ -1,17 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy } from "react";
 import { useHistory } from "react-router-dom";
 import { SSE } from "sse.js";
 import useFetch, { CachePolicies } from "use-http";
 import { Item, FileItem, getChildren } from "@mika-f/monaka";
 
 import Loading from "../../templates/Loading";
-import ProjectEditorTemplate from "../../templates/ProjectEditor";
 import ProjectStarterTemplate from "../../templates/ProjectStarter";
 import { ProjectInstance, Instance } from "../../../models/instance";
 import { Executor } from "../../../models/executor";
 import { templates, PerlTemplate } from "../../../templates";
 import { Dependency } from "../../../models/dependency";
 import { File } from "../../../models/file";
+
+const ProjectEditorTemplate = lazy(() => import(/* webpackChunkName: "editor" */ "../../templates/ProjectEditor"));
 
 const Root: React.FC = () => {
   const [items, setItems] = useState<Item[] | null>(null);

@@ -1,6 +1,3 @@
-// global polyfill
-import "sse.js";
-
 import React from "react";
 import ReactDOM from "react-dom";
 import { createGlobalStyle } from "styled-components";
