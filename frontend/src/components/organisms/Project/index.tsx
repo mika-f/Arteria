@@ -21,12 +21,12 @@ type Props = {
 const Container = styled.div`
   display: grid;
   grid-template-rows: repeat(3, 32px);
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 120px 1fr;
   padding: 8px 0;
 `;
 
 const InputStyled = styled(Input)`
-  width: 130px;
+  width: 110px;
   height: 24px;
 `;
 
