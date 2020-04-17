@@ -5,22 +5,10 @@ The goal of this project is to create a Perl version of RunKit.
 
 ## Requirements
 
-* Rust 1.42.0 or higher
-* Node.js 10.x or higher
-* Docker (Server API version 1.40)
-* MySQL 8.x or higher
-
-## Environment Variables
-
-| Variable Name           | Example Value | Description                       |
-| ----------------------- | ------------- | --------------------------------- |
-| `ARTERIA_DATABASE_HOST` | `localhost`   | MySQL database connection address |
-| `ARTERIA_DATABASE_USER` | `root`        | MySQL database user               |
-| `ARTERIA_DATABASE_PASS` | `p@ssw0rd`    | MySQL database password           |
-| `ARTERIA_DATABASE_PORT` | `3306`        | MySQL database connection port    |
-| `ARTERIA_HASH_SALT`     | `Ex@mp1e`     | Hash ID salt value                |
-| `ARTERIA_SERVER_BIND`   | `127.0.0.1`   | Arteria server binding address    |
-| `ARTERIA_SERVER_PORT`   | `3000`        | Arteria server binding port       |
+- Rust 1.42.0 or higher
+- Node.js 10.x or higher
+- Docker (Server API version 1.40)
+- MySQL 8.x or higher
 
 ## FAQ
 
