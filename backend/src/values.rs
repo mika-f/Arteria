@@ -1,5 +1,7 @@
 use std::env;
 
+use users;
+
 pub fn bind_address() -> String {
   env::var("ARTERIA_BIND").unwrap_or("127.0.0.1".to_owned())
 }
@@ -40,6 +42,17 @@ pub fn container_concurrency() -> usize {
     .expect("ARTERIA_CONTAINER_CONCURRENCY is not set")
     .parse()
     .unwrap()
+}
+
+pub fn container_user() -> Option<String> {
+  match env::var("ARTERIA_RUNNING_IN_CURRENT_USER") {
+    Ok(_) => Some(format!(
+      "{}:{}",
+      users::get_current_uid(),
+      users::get_current_gid()
+    )),
+    Err(_) => None,
+  }
 }
 
 pub fn executor_cpu_limit() -> u64 {

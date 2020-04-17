@@ -31,6 +31,7 @@ pub struct ExecuteContainer {
   pub runtime: Option<String>,
   pub timeout: Option<u64>,
   pub ulimits: Option<Vec<HashMap<String, String>>>,
+  pub user: Option<String>,
   pub working_dir: Option<String>,
 }
 
@@ -72,6 +73,7 @@ impl Handler<ExecuteContainer> for DockerExecutor {
             attach_stderr: Some(true),
             cmd: Some(msg.cmd),
             image: Some(msg.image),
+            user: msg.user,
 
             // optionals
             env: msg.env,

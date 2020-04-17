@@ -209,6 +209,7 @@ async fn execute_installer(
       runtime: None,
       timeout: None,
       ulimits: None,
+      user: values::container_user(),
       working_dir: Some("/usr/local/PROJECT/workspace".to_owned()),
     })
     .await;
@@ -248,6 +249,7 @@ async fn execute_executor(
       runtime: values::executor_runtime(),   // I want to use gVisor for container runtime
       timeout: Some(values::executor_timeout()), // timeout 10 seconds
       ulimits: None,                         // I want to limit processes to: { soft: 16, hard: 32}
+      user: values::container_user(),
       working_dir: Some("/usr/local/PROJECT/workspace".to_owned()),
     })
     .await;
