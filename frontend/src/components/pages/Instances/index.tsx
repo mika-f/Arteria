@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Helmet from "react-helmet";
 import { useParams } from "react-router-dom";
 import useFetch, { CachePolicies } from "use-http";
 import { v4 as uuid } from "uuid";
@@ -65,7 +66,14 @@ const Instances: React.FC = () => {
     }
   };
 
-  return <>{items === null || instance === null ? <Loading /> : <ProjectReaderTemplate instance={instance} items={items} lines={lines} />}</>;
+  return (
+    <>
+      <Helmet>
+        <title>{instance?.title || "notitle"}</title>
+      </Helmet>
+      {items === null || instance === null ? <Loading /> : <ProjectReaderTemplate instance={instance} items={items} lines={lines} />}
+    </>
+  );
 };
 
 export default Instances;
